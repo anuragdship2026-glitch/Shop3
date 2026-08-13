@@ -6,12 +6,16 @@ interface HeroBannerProps {
   heroProducts: Product[];
   onSelectProduct: (p: Product) => void;
   onExploreProducts: () => void;
+  onAddToCart?: (p: Product) => void;
+  onBuyNow?: (p: Product) => void;
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   heroProducts,
   onSelectProduct,
-  onExploreProducts
+  onExploreProducts,
+  onAddToCart,
+  onBuyNow
 }) => {
   return (
     <section className="relative overflow-hidden bg-white text-[#2c2c2c] py-10 sm:py-14 px-6 sm:px-12 rounded-3xl mx-4 sm:mx-6 lg:mx-8 my-4 shadow-sm border border-[#4b0082]/10">
@@ -108,19 +112,53 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                       </h3>
                     </div>
 
-                    <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
-                      <span className="text-sm font-black text-[#6b1a9e]">
-                        ₹{product.sellPrice}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectProduct(product);
-                        }}
-                        className="bg-[#4b0082] text-white text-[9px] px-2.5 py-1 rounded font-bold uppercase tracking-widest hover:bg-[#3a0066] transition"
-                      >
-                        Buy
-                      </button>
+                    <div className="mt-2.5 pt-2 border-t border-gray-100 space-y-2">
+                      {/* Price Row + Save Badge */}
+                      <div className="flex items-center justify-between flex-wrap gap-1">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-xs sm:text-sm font-black text-[#4b0082]">
+                            ₹{product.sellPrice.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-[10px] text-gray-400 line-through font-medium">
+                            ₹{product.mrp.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        <span className="text-[9px] text-emerald-800 font-extrabold bg-emerald-100 px-1.5 py-0.5 rounded-full border border-emerald-200">
+                          Save ₹{(product.mrp - product.sellPrice).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+
+                      {/* Two Buttons: ADD TO CART and BUY NOW */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onAddToCart) {
+                              onAddToCart(product);
+                            } else {
+                              onSelectProduct(product);
+                            }
+                          }}
+                          className="w-full py-1.5 px-1 bg-purple-50/80 hover:bg-purple-100 text-[#4b0082] font-black text-[9px] sm:text-[10px] uppercase tracking-wider rounded-2xl transition flex items-center justify-center gap-1 border border-purple-200"
+                        >
+                          <ShoppingBag className="w-3 h-3 text-[#4b0082]" />
+                          <span>ADD TO CART</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onBuyNow) {
+                              onBuyNow(product);
+                            } else {
+                              onSelectProduct(product);
+                            }
+                          }}
+                          className="w-full py-1.5 px-1 bg-[#4b0082] hover:bg-[#3a0066] text-white font-black text-[9px] sm:text-[10px] uppercase tracking-wider rounded-2xl shadow-sm transition flex items-center justify-center gap-1 border border-[#c9a84c]/50"
+                        >
+                          <Zap className="w-3 h-3 text-amber-300 fill-amber-300" />
+                          <span>BUY NOW</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}

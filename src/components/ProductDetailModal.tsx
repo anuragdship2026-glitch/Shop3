@@ -321,15 +321,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <CoolTagsRow />
 
             {/* Price Box */}
-            <div className="flex items-baseline gap-3 bg-white/80 p-3 rounded-2xl border border-gray-200/60 shadow-sm">
-              <span className="text-2xl sm:text-3xl font-black text-[#6b1a9e]">
-                Rs. {currentPrice * quantity}
+            <div className="flex items-baseline gap-3 bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs flex-wrap">
+              <span className="text-2xl sm:text-3xl font-black text-[#4b0082]">
+                ₹{(currentPrice * quantity).toLocaleString('en-IN')}
               </span>
-              <span className="text-sm text-gray-400 line-through">
-                MRP Rs. {currentMrp * quantity}
+              <span className="text-sm sm:text-base text-gray-400 line-through font-medium">
+                ₹{(currentMrp * quantity).toLocaleString('en-IN')}
               </span>
-              <span className="bg-[#c9a84c] text-[#2d004d] text-xs font-black px-2.5 py-1 rounded-full uppercase">
-                {discountPercent}% OFF
+              <span className="bg-emerald-100 text-emerald-800 text-xs font-black px-2.5 py-1 rounded-full border border-emerald-200">
+                Save ₹{((currentMrp - currentPrice) * quantity).toLocaleString('en-IN')} ({discountPercent}% OFF)
               </span>
             </div>
 
@@ -670,48 +670,74 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* TAB CONTENT: REVIEWS */}
           {activeTab === 'REVIEWS' && (
-            <div className="space-y-4 text-xs text-gray-700 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+            <div className="space-y-4 text-xs text-gray-700 bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs">
               <div className="flex items-center justify-between border-b pb-3">
                 <div>
-                  <h3 className="font-serif-brand text-lg font-extrabold text-[#4b0082]">
-                    Verified Buyer Ratings for {product.name.split('—')[0]}
+                  <h3 className="font-bold text-lg text-[#111827]">
+                    Customer Reviews
                   </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex text-[#c9a84c]">
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <div className="flex text-[#0d826c]">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-current text-[#c9a84c]" />
+                        <Star key={i} className="w-4 h-4 fill-[#0d826c] text-[#0d826c]" />
                       ))}
                     </div>
-                    <span className="font-black text-sm text-gray-900">{product.rating} out of 5</span>
+                    <span className="font-bold text-sm text-[#111827]">{product.rating}</span>
+                    <span className="text-gray-400 font-normal">({product.reviewsCount || 1108} reviews)</span>
                   </div>
                 </div>
-                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
-                  ✓ 100% Verified Indian Buyers
+                <span className="bg-emerald-50 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
+                  ✓ Verified Reviews
                 </span>
               </div>
 
-              <div className="space-y-3">
-                {REVIEWS.filter(r => r.productName.toLowerCase().includes(product.name.substring(0, 10).toLowerCase()) || r.productName.toLowerCase().includes(product.category.toLowerCase())).slice(0, 3).length > 0 ? (
-                  REVIEWS.filter(r => r.productName.toLowerCase().includes(product.name.substring(0, 10).toLowerCase()) || r.productName.toLowerCase().includes(product.category.toLowerCase())).slice(0, 3).map((rev) => (
-                    <div key={rev.id} className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-900">{rev.author} ({rev.location})</span>
-                        <span className="text-[10px] text-gray-400">{rev.date}</span>
+              <div className="divide-y divide-gray-200">
+                {(REVIEWS.filter(r => r.productId === product.id).length > 0
+                  ? REVIEWS.filter(r => r.productId === product.id).slice(0, 5)
+                  : REVIEWS.slice(0, 5)
+                ).map((rev) => {
+                  const initial = rev.author ? rev.author.charAt(0).toUpperCase() : 'C';
+                  return (
+                    <div key={rev.id} className="py-4 space-y-2">
+                      <div className="flex items-center gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3.5 h-3.5 ${
+                              i < rev.rating
+                                ? 'fill-[#0d826c] text-[#0d826c]'
+                                : 'text-gray-300 fill-gray-200'
+                            }`}
+                          />
+                        ))}
                       </div>
-                      <p className="text-gray-600">"{rev.comment}"</p>
-                    </div>
-                  ))
-                ) : (
-                  REVIEWS.slice(0, 2).map((rev) => (
-                    <div key={rev.id} className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-900">{rev.author} ({rev.location})</span>
-                        <span className="text-[10px] text-gray-400">{rev.date}</span>
+
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-full bg-[#e6f4f1] text-[#0d826c] flex items-center justify-center font-bold text-xs shrink-0 border border-teal-100">
+                          {initial}
+                        </div>
+                        <div>
+                          <div className="font-bold text-[#111827] text-xs">
+                            {rev.author}
+                          </div>
+                          <div className="text-[10px] text-gray-400 font-normal">
+                            {rev.date}
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-gray-600">"{rev.comment}"</p>
+
+                      {rev.title && (
+                        <h4 className="font-bold text-[#111827] text-xs">
+                          {rev.title}
+                        </h4>
+                      )}
+
+                      <p className="text-xs text-gray-700 leading-relaxed font-normal">
+                        {rev.comment}
+                      </p>
                     </div>
-                  ))
-                )}
+                  );
+                })}
               </div>
             </div>
           )}

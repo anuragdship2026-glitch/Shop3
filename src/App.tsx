@@ -296,6 +296,8 @@ export default function App() {
             heroProducts={heroProducts}
             onSelectProduct={handleOpenProduct}
             onExploreProducts={() => handleNavigateView('products')}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
           />
 
           {/* Trust Badges Bar */}

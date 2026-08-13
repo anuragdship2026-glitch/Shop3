@@ -576,6 +576,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </div>
           </div>
         )}
+
+        {/* Dedicated Customer Reviews Section above Footer */}
+        <div className="mt-12 pt-6 border-t border-gray-200/80">
+          <ReviewsSection productId={product.id} rating={product.rating} totalReviews={product.reviewsCount} />
+        </div>
       </div>
 
       {/* Sticky Bottom Buying Bar for Mobile */}

@@ -67,17 +67,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Price & Two Action Buttons */}
       <div className="mt-3 pt-2.5 border-t border-gray-100 space-y-2.5">
-        <div className="flex items-baseline justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-1">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-base sm:text-lg font-black text-[#6b1a9e]">
-              ₹{product.sellPrice}
+            <span className="text-base sm:text-lg font-black text-[#4b0082]">
+              ₹{product.sellPrice.toLocaleString('en-IN')}
             </span>
-            <span className="text-xs text-gray-400 line-through">
-              ₹{product.mrp}
+            <span className="text-xs text-gray-400 line-through font-medium">
+              ₹{product.mrp.toLocaleString('en-IN')}
             </span>
           </div>
-          <span className="text-[9px] text-emerald-800 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-            In Stock
+          <span className="text-[10px] text-emerald-800 font-black bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
+            Save ₹{(product.mrp - product.sellPrice).toLocaleString('en-IN')}
           </span>
         </div>
 
