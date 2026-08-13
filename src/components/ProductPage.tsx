@@ -223,53 +223,29 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 ))}
               </div>
             )}
-
-            {/* Guarantee Grid */}
-            <div className="grid grid-cols-3 gap-3 pt-4">
-              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
-                <ShieldCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
-                <div className="text-xs font-bold text-gray-900">100% Genuine</div>
-                <div className="text-[10px] text-gray-500">Dermatologically tested</div>
-              </div>
-              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
-                <Truck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
-                <div className="text-xs font-bold text-gray-900">Free Shipping</div>
-                <div className="text-[10px] text-gray-500">Pan India Delivery</div>
-              </div>
-              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
-                <PackageCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
-                <div className="text-xs font-bold text-gray-900">Cash On Delivery</div>
-                <div className="text-[10px] text-gray-500">Pay at Doorstep</div>
-              </div>
-            </div>
           </div>
 
-          {/* RIGHT COLUMN: Conversion Elements & Buying Form */}
+          {/* RIGHT COLUMN: Sequence as requested */}
           <div className="lg:col-span-6 space-y-5">
             
-            {/* 1. BENEFIT HIGHLIGHT CARDS (as in requested design) */}
-            <div className="grid grid-cols-2 gap-3">
-              <BenefitCard title="Instant Coverage" subtitle="10-sec grey & root fix" />
-              <BenefitCard title="Sweatproof" subtitle="Lasts all day long" />
-            </div>
-
-            {/* 2. OVERLAPPING CUSTOMER FACE AVATARS + RATING */}
-            <div className="bg-amber-50/70 p-3 rounded-2xl border border-amber-200/80 shadow-2xs">
-              <CustomerProofRow
-                customerCountText={product.happyCustomersText || '36,000 + Happy Customers'}
-                ratingText={`${product.rating} / 5.0`}
-              />
-            </div>
-
-            {/* 3. COOL TAGS ROW */}
-            <CoolTagsRow />
-
-            {/* 4. TITLE */}
+            {/* 1. TITLE */}
             <h1 className="font-serif-brand text-2xl sm:text-3xl font-black text-gray-900 leading-tight">
               {product.name}
             </h1>
 
-            {/* Live Social Proof Banner */}
+            {/* 2. 28000+ DETAILS STARS */}
+            <div className="bg-amber-50/70 p-3 rounded-2xl border border-amber-200/80 shadow-2xs">
+              <CustomerProofRow
+                customerCountText={product.happyCustomersText || '28,000+ Happy Customers'}
+                ratingText={`${product.rating} / 5.0`}
+              />
+            </div>
+
+            {/* 3. BADGES OF BEST SELLER, INSTA COVER, ETC. */}
+            <CoolTagsRow />
+
+            {/* 4. PRICE SECTION & BUY SECTIONS */}
+            {/* Live Urgency Banner */}
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs bg-[#4b0082]/5 border border-[#4b0082]/15 p-2.5 rounded-xl font-bold text-[#4b0082]">
               <div className="flex items-center gap-1.5">
                 <Flame className="w-4 h-4 text-orange-500 animate-pulse" />
@@ -295,9 +271,36 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">
-                Inclusive of all taxes. Free shipping on orders above ₹499.
+                Inclusive of all taxes. Free shipping on all orders.
               </div>
             </div>
+
+            {/* Size Selector if available */}
+            {product.hasSizeGuide && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-extrabold text-gray-800 uppercase">Select Size: <span className="text-[#4b0082] font-black">{selectedSize}</span></span>
+                  <button onClick={onOpenSizeGuide} className="text-[#4b0082] font-black underline flex items-center gap-1 hover:text-[#320058]">
+                    <Ruler className="w-3.5 h-3.5" /> Size Guide
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      className={`px-3.5 py-1.5 rounded-xl border-2 font-black text-xs transition ${
+                        selectedSize === s
+                          ? 'border-[#4b0082] bg-[#4b0082] text-white shadow-xs'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Bundles Selection */}
             {product.bundles && product.bundles.length > 0 && (
@@ -395,6 +398,49 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
             <PaymentIconsRow />
 
+            {/* PRODUCT-WISE HIGHLIGHT WIDGETS (e.g. One-Touch Reset, Long Battery Life, etc.) */}
+            {product.keyIcons && product.keyIcons.length > 0 && (
+              <div className="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-200/80 space-y-2">
+                <div className="text-[11px] font-black uppercase text-[#4b0082] tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+                  <span>Product Highlights & Specs</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {product.keyIcons.map((ic, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white p-2.5 rounded-xl border border-purple-100 text-center flex flex-col items-center justify-center shadow-2xs hover:border-[#4b0082]/30 transition"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#4b0082]/10 text-[#4b0082] flex items-center justify-center mb-1.5 font-bold">
+                        <Sparkles className="w-4 h-4 text-[#4b0082]" />
+                      </div>
+                      <div className="text-xs font-black text-gray-900 leading-tight">{ic.title}</div>
+                      <div className="text-[10px] text-gray-500 font-medium mt-0.5 leading-tight">{ic.subtitle}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 5. AT LAST: BADGES OF GENUINE, FREE DELIVERY, COD */}
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <ShieldCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">100% Genuine</div>
+                <div className="text-[10px] text-gray-500">Quality Assured</div>
+              </div>
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <Truck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">Free Shipping</div>
+                <div className="text-[10px] text-gray-500">Pan India Delivery</div>
+              </div>
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <PackageCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">Cash On Delivery</div>
+                <div className="text-[10px] text-gray-500">Pay at Doorstep</div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -425,37 +471,38 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           <div className="py-6">
             {activeTab === 'OVERVIEW' && (
               <div className="space-y-4 text-sm leading-relaxed text-gray-700">
-                <p className="font-medium">{product.shortDesc}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  {product.benefits?.map((benefit, i) => (
-                    <div key={i} className="flex items-start gap-2.5 p-3 rounded-2xl bg-purple-50/50 border border-purple-100">
-                      <CheckCircle2 className="w-5 h-5 text-[#4b0082] shrink-0 mt-0.5" />
-                      <span className="font-bold text-gray-900">{benefit}</span>
-                    </div>
-                  ))}
+                <p className="font-medium text-base text-gray-800">{product.description}</p>
+                <div className="space-y-2 pt-2">
+                  <h4 className="font-extrabold text-[#4b0082] uppercase text-xs tracking-wider">Key Product Features & Benefits:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    {(product.features || []).map((feature, i) => (
+                      <div key={i} className="flex items-start gap-2.5 p-3 rounded-2xl bg-purple-50/50 border border-purple-100">
+                        <CheckCircle2 className="w-5 h-5 text-[#4b0082] shrink-0 mt-0.5" />
+                        <span className="font-bold text-gray-900">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
             {activeTab === 'HOW_TO_USE' && (
               <div className="space-y-4 text-sm text-gray-700">
-                <h3 className="font-extrabold text-gray-900 text-base">Simple 3-Step Application Guide:</h3>
+                <h3 className="font-extrabold text-gray-900 text-base">Simple 3-Step Guide for {product.name.split('—')[0]}:</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
-                    <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-black text-xs mb-2">1</div>
-                    <div className="font-bold text-gray-900">Prepare & Uncap</div>
-                    <div className="text-xs text-gray-600 mt-1">Ensure roots or area are clean and completely dry before applying.</div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
-                    <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-black text-xs mb-2">2</div>
-                    <div className="font-bold text-gray-900">Apply Gently</div>
-                    <div className="text-xs text-gray-600 mt-1">Glide gently across target areas. Blend using fingers or applicator brush.</div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
-                    <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-black text-xs mb-2">3</div>
-                    <div className="font-bold text-gray-900">Set & Enjoy</div>
-                    <div className="text-xs text-gray-600 mt-1">Dries in 10 seconds. Enjoy sweatproof, natural-looking flawless coverage all day!</div>
-                  </div>
+                  {(product.howToUseSteps || [
+                    { stepNumber: 1, title: 'Unpack & Inspect', desc: 'Carefully unpack your item and inspect components before first use.' },
+                    { stepNumber: 2, title: 'Easy Application / Usage', desc: 'Follow simple operational steps for instant daily convenience.' },
+                    { stepNumber: 3, title: 'Store Safely', desc: 'Store in a clean, dry location to maintain maximum quality and longevity.' }
+                  ]).map((step) => (
+                    <div key={step.stepNumber} className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+                      <div className="w-7 h-7 bg-amber-500 text-white rounded-full flex items-center justify-center font-black text-xs mb-2 shadow-2xs">
+                        {step.stepNumber}
+                      </div>
+                      <div className="font-extrabold text-gray-900">{step.title}</div>
+                      <div className="text-xs text-gray-600 mt-1 leading-relaxed">{step.desc}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -463,10 +510,17 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             {activeTab === 'SPECS' && (
               <div className="space-y-3 text-sm text-gray-700">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 rounded-xl bg-gray-50 flex justify-between"><span className="font-bold text-gray-500">Category:</span><span className="font-extrabold text-gray-900">{product.category}</span></div>
-                  <div className="p-3 rounded-xl bg-gray-50 flex justify-between"><span className="font-bold text-gray-500">Formulation:</span><span className="font-extrabold text-gray-900">100% Organic & Non-toxic</span></div>
-                  <div className="p-3 rounded-xl bg-gray-50 flex justify-between"><span className="font-bold text-gray-500">Shelf Life:</span><span className="font-extrabold text-gray-900">24 Months</span></div>
-                  <div className="p-3 rounded-xl bg-gray-50 flex justify-between"><span className="font-bold text-gray-500">Country of Origin:</span><span className="font-extrabold text-gray-900">India</span></div>
+                  {(product.specifications || [
+                    { label: 'Category', value: product.category },
+                    { label: 'Quality Standard', value: '100% Quality Inspected' },
+                    { label: 'Warranty & Support', value: '7-Day Guaranteed Replacement' },
+                    { label: 'Country of Origin', value: 'India' }
+                  ]).map((spec, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-gray-50 flex justify-between border border-gray-200/60 items-center">
+                      <span className="font-bold text-gray-500 text-xs">{spec.label}:</span>
+                      <span className="font-extrabold text-gray-900 text-xs">{spec.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

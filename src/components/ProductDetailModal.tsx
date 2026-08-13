@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Product, CartItem } from '../types';
+import { REVIEWS } from '../data/products';
 import { PaymentIconsRow } from './PaymentLogos';
 import { BenefitCard, CustomerProofRow, CoolTagsRow } from './CustomerSocialProof';
 import {
@@ -298,51 +299,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </p>
             </div>
 
-            {/* Key Feature Icons */}
-            {product.keyIcons && product.keyIcons.length > 0 && (
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-gray-200/60">
-                {product.keyIcons.map((ic, idx) => (
-                  <div key={idx} className="flex flex-col items-center text-center p-2.5 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200/60 shadow-sm">
-                    <div className="w-8 h-8 rounded-full bg-[#e8d5f5] text-[#4b0082] flex items-center justify-center font-bold mb-1">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-bold text-[#2c2c2c] leading-tight">
-                      {ic.title}
-                    </span>
-                    <span className="text-[10px] text-gray-500">
-                      {ic.subtitle}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
           </div>
 
           {/* RIGHT COLUMN - Purchasing & High-Conversion CTAs */}
           <div className="lg:col-span-6 space-y-4">
             
-            {/* Benefit Highlights Cards (Grid as requested) */}
-            <div className="grid grid-cols-2 gap-2.5">
-              <BenefitCard title="Instant Coverage" subtitle="10-sec grey & root fix" />
-              <BenefitCard title="Sweatproof" subtitle="Lasts all day long" />
-            </div>
+            {/* Product Title */}
+            <h1 className="font-serif-brand text-2xl sm:text-3xl font-black text-[#2c2c2c] leading-tight pt-1">
+              {product.name}
+            </h1>
 
             {/* Customer Rating Banner with Face Avatars */}
             <div className="bg-amber-50/50 p-2.5 rounded-2xl border border-amber-200/60 shadow-2xs">
               <CustomerProofRow
-                customerCountText={product.happyCustomersText || '36,000 + Happy Customers'}
+                customerCountText={product.happyCustomersText || '28,000+ Happy Customers'}
                 ratingText={`${product.rating} / 5.0`}
               />
             </div>
 
             {/* Cool Pill Badges / Tags */}
             <CoolTagsRow />
-
-            {/* Product Title */}
-            <h1 className="font-serif-brand text-2xl sm:text-3xl font-black text-[#2c2c2c] leading-tight pt-1">
-              {product.name}
-            </h1>
 
             {/* Price Box */}
             <div className="flex items-baseline gap-3 bg-white/80 p-3 rounded-2xl border border-gray-200/60 shadow-sm">
@@ -519,6 +495,49 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               )}
             </div>
 
+            {/* PRODUCT-WISE HIGHLIGHT WIDGETS (e.g. One-Touch Reset, Long Battery Life, etc.) */}
+            {product.keyIcons && product.keyIcons.length > 0 && (
+              <div className="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-200/80 space-y-2">
+                <div className="text-[11px] font-black uppercase text-[#4b0082] tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+                  <span>Product Highlights & Specs</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {product.keyIcons.map((ic, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white p-2.5 rounded-xl border border-purple-100 text-center flex flex-col items-center justify-center shadow-2xs hover:border-[#4b0082]/30 transition"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#4b0082]/10 text-[#4b0082] flex items-center justify-center mb-1.5 font-bold">
+                        <Sparkles className="w-4 h-4 text-[#4b0082]" />
+                      </div>
+                      <div className="text-xs font-black text-gray-900 leading-tight">{ic.title}</div>
+                      <div className="text-[10px] text-gray-500 font-medium mt-0.5 leading-tight">{ic.subtitle}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AT LAST: BADGES OF GENUINE, FREE DELIVERY, COD */}
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <ShieldCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">100% Genuine</div>
+                <div className="text-[10px] text-gray-500">Quality Assured</div>
+              </div>
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <Truck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">Free Shipping</div>
+                <div className="text-[10px] text-gray-500">Pan India Delivery</div>
+              </div>
+              <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
+                <PackageCheck className="w-6 h-6 text-[#4b0082] mx-auto mb-1" />
+                <div className="text-xs font-bold text-gray-900">Cash On Delivery</div>
+                <div className="text-[10px] text-gray-500">Pay at Doorstep</div>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -547,6 +566,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               }`}
             >
               How To Use
+            </button>
+            <button
+              onClick={() => setActiveTab('SPECS')}
+              className={`px-4 py-2 text-xs font-bold rounded-xl transition whitespace-nowrap ${
+                activeTab === 'SPECS'
+                  ? 'bg-[#4b0082] text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Specifications
             </button>
             <button
               onClick={() => setActiveTab('REVIEWS')}
@@ -597,24 +626,44 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {activeTab === 'HOW_TO_USE' && (
             <div className="space-y-4 text-xs text-gray-700 leading-relaxed bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <h3 className="font-serif-brand text-lg font-extrabold text-[#4b0082]">
-                Easy Usage Instructions
+                Simple 3-Step Guide for {product.name.split('—')[0]}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100 space-y-1">
-                  <span className="w-6 h-6 rounded-full bg-[#4b0082] text-white text-xs font-bold flex items-center justify-center">1</span>
-                  <h4 className="font-bold text-[#2c2c2c]">Unbox & Inspect</h4>
-                  <p className="text-gray-600">Unpack your item carefully and charge or prepare before first use.</p>
-                </div>
-                <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100 space-y-1">
-                  <span className="w-6 h-6 rounded-full bg-[#4b0082] text-white text-xs font-bold flex items-center justify-center">2</span>
-                  <h4 className="font-bold text-[#2c2c2c]">Simple Setup</h4>
-                  <p className="text-gray-600">Follow the included instruction manual for effortless everyday use.</p>
-                </div>
-                <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100 space-y-1">
-                  <span className="w-6 h-6 rounded-full bg-[#4b0082] text-white text-xs font-bold flex items-center justify-center">3</span>
-                  <h4 className="font-bold text-[#2c2c2c]">Long-lasting Care</h4>
-                  <p className="text-gray-600">Store in a safe dry place after use to ensure maximum durability.</p>
-                </div>
+                {(product.howToUseSteps || [
+                  { stepNumber: 1, title: 'Unpack & Inspect', desc: 'Carefully unpack your item and inspect before first use.' },
+                  { stepNumber: 2, title: 'Easy Usage', desc: 'Follow simple operational steps for daily convenience.' },
+                  { stepNumber: 3, title: 'Store Safely', desc: 'Store in a clean, dry location to maintain quality.' }
+                ]).map((step) => (
+                  <div key={step.stepNumber} className="p-4 rounded-xl bg-purple-50/60 border border-purple-100 space-y-1">
+                    <span className="w-6 h-6 rounded-full bg-[#4b0082] text-white text-xs font-bold flex items-center justify-center">
+                      {step.stepNumber}
+                    </span>
+                    <h4 className="font-bold text-[#2c2c2c]">{step.title}</h4>
+                    <p className="text-gray-600 leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB CONTENT: SPECS */}
+          {activeTab === 'SPECS' && (
+            <div className="space-y-4 text-xs text-gray-700 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+              <h3 className="font-serif-brand text-lg font-extrabold text-[#4b0082]">
+                Product Specifications
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {(product.specifications || [
+                  { label: 'Category', value: product.category },
+                  { label: 'Quality Standard', value: '100% Quality Inspected' },
+                  { label: 'Warranty & Support', value: '7-Day Replacement Guarantee' },
+                  { label: 'Country of Origin', value: 'India' }
+                ]).map((spec, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-gray-50 flex justify-between border border-gray-200/60 items-center">
+                    <span className="font-bold text-gray-500">{spec.label}:</span>
+                    <span className="font-extrabold text-gray-900">{spec.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -625,7 +674,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="flex items-center justify-between border-b pb-3">
                 <div>
                   <h3 className="font-serif-brand text-lg font-extrabold text-[#4b0082]">
-                    Verified Buyer Ratings
+                    Verified Buyer Ratings for {product.name.split('—')[0]}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex text-[#c9a84c]">
@@ -642,20 +691,27 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               <div className="space-y-3">
-                <div className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-gray-900">Pooja Sharma (Delhi)</span>
-                    <span className="text-[10px] text-gray-400">2 days ago</span>
-                  </div>
-                  <p className="text-gray-600">"Exceeded my expectations! Delivery was fast within 3 days and Cash on Delivery option worked smoothly."</p>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-gray-900">Sneha Patel (Ahmedabad)</span>
-                    <span className="text-[10px] text-gray-400">5 days ago</span>
-                  </div>
-                  <p className="text-gray-600">"Super high quality product! Very satisfied with my purchase."</p>
-                </div>
+                {REVIEWS.filter(r => r.productName.toLowerCase().includes(product.name.substring(0, 10).toLowerCase()) || r.productName.toLowerCase().includes(product.category.toLowerCase())).slice(0, 3).length > 0 ? (
+                  REVIEWS.filter(r => r.productName.toLowerCase().includes(product.name.substring(0, 10).toLowerCase()) || r.productName.toLowerCase().includes(product.category.toLowerCase())).slice(0, 3).map((rev) => (
+                    <div key={rev.id} className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-gray-900">{rev.author} ({rev.location})</span>
+                        <span className="text-[10px] text-gray-400">{rev.date}</span>
+                      </div>
+                      <p className="text-gray-600">"{rev.comment}"</p>
+                    </div>
+                  ))
+                ) : (
+                  REVIEWS.slice(0, 2).map((rev) => (
+                    <div key={rev.id} className="p-3 bg-gray-50 rounded-xl space-y-1 border border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-gray-900">{rev.author} ({rev.location})</span>
+                        <span className="text-[10px] text-gray-400">{rev.date}</span>
+                      </div>
+                      <p className="text-gray-600">"{rev.comment}"</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

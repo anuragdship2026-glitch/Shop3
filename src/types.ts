@@ -1,3 +1,14 @@
+export interface UsageStep {
+  stepNumber: number;
+  title: string;
+  desc: string;
+}
+
+export interface ProductSpec {
+  label: string;
+  value: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -5,7 +16,7 @@ export interface Product {
   cost: number;
   sellPrice: number;
   mrp: number;
-  category: 'Beauty & Hair' | "Women's Fashion" | 'Wellness & Fitness' | 'Spiritual & Devotion';
+  category: 'Beauty & Haircare' | "Women's Fashion" | 'Wellness & Body Care' | 'Spiritual & Devotional' | string;
   isHero: boolean;
   tag?: string;
   rating: number;
@@ -17,6 +28,8 @@ export interface Product {
   description: string;
   features: string[];
   keyIcons?: { iconName: string; title: string; subtitle: string }[];
+  howToUseSteps?: UsageStep[];
+  specifications?: ProductSpec[];
   bundles?: {
     id: string;
     name: string;

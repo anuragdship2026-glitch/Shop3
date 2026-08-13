@@ -31,10 +31,10 @@ export const Header: React.FC<HeaderProps> = ({
 
   const categories = [
     'All Products',
-    'Beauty & Hair',
+    'Beauty & Haircare',
     "Women's Fashion",
-    'Wellness & Fitness',
-    'Spiritual & Devotion'
+    'Wellness & Body Care',
+    'Spiritual & Devotional'
   ];
 
   return (

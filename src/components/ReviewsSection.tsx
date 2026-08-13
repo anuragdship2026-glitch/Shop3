@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { REVIEWS } from '../data/products';
 import { Star, CheckCircle2, MessageSquare, ThumbsUp } from 'lucide-react';
 
-export const ReviewsSection: React.FC = () => {
+interface ReviewsSectionProps {
+  productId?: string;
+  rating?: number;
+  totalReviews?: number;
+}
+
+export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ productId, rating = 4.9, totalReviews }) => {
   const [reviewsList, setReviewsList] = useState(REVIEWS);
   const [showAddReview, setShowAddReview] = useState(false);
   const [author, setAuthor] = useState('');
   const [location, setLocation] = useState('');
-  const [rating, setRating] = useState(5);
+  const [userRating, setUserRating] = useState(5);
   const [comment, setComment] = useState('');
-  const [productName, setProductName] = useState('4-in-1 High Waist Tummy Tucker Shapewear');
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +24,11 @@ export const ReviewsSection: React.FC = () => {
       id: 'rev-' + Date.now(),
       author,
       location: location || 'India',
-      rating,
+      rating: userRating,
       date: 'Just now',
       comment,
       verified: true,
-      productName
+      productName: productId || 'Verified Customer Review'
     };
 
     setReviewsList([newRev, ...reviewsList]);
@@ -31,6 +36,12 @@ export const ReviewsSection: React.FC = () => {
     setComment('');
     setShowAddReview(false);
   };
+
+  const displayReviews = productId
+    ? reviewsList.filter(r => r.productName.toLowerCase().includes(productId.split('-')[0].toLowerCase()) || productId.toLowerCase().includes(r.productName.split(' ')[0].toLowerCase()))
+    : reviewsList;
+
+  const finalReviewsList = displayReviews.length > 0 ? displayReviews : reviewsList;
 
   return (
     <section className="my-12 px-4 sm:px-6 max-w-7xl mx-auto">
@@ -104,7 +115,7 @@ export const ReviewsSection: React.FC = () => {
 
         {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {reviewsList.map((rev) => (
+          {finalReviewsList.map((rev) => (
             <div
               key={rev.id}
               className="p-5 bg-[#f2eded]/40 rounded-2xl border border-gray-100 flex flex-col justify-between space-y-3"

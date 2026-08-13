@@ -4,37 +4,380 @@ export const HERO_PRODUCTS_COUNT = 4;
 
 export const PRODUCTS: Product[] = [
   {
-    id: 'instablack-touchup-stick',
-    name: 'InstaBlack 2-in-1 Root Touch-Up Stick',
+    id: 'warmease-heating-massage-belt',
+    name: 'WarmEase™ Portable Heating Massage Belt — Period Pain & Back Cramp Relief',
     supplier: 'Dropship India',
-    cost: 200,
-    sellPrice: 599,
-    mrp: 1299,
-    category: 'Beauty & Hair',
+    cost: 500,
+    sellPrice: 1099,
+    mrp: 2199,
+    category: 'Wellness & Body Care',
     isHero: true,
     tag: 'Running Ad | Best Seller',
-    rating: 4.8,
-    reviewCount: 3840,
-    happyCustomersText: '36,000+ Happy Customers',
-    stockCount: 9,
+    rating: 4.9,
+    reviewCount: 3890,
+    happyCustomersText: '32,000+ Women Relieved',
+    stockCount: 12,
     images: [
-      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?q=80&w=800&auto=format&fit=crop'
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_08_59_PM.png?v=1782394850',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_07_12_PM.png?v=1782394850',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1740568248108-32.jpg?v=1782164533',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1740568248143-47.jpg?v=1782164533',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Hc74adce9b3784453b6698073c46309f2G.jpg?v=1782391815',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H0957efbdbad44a3bb0445c114c69de57q.jpg?v=1782391816',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H23af5a78d6214c448d48468cb0d385f8Y.jpg?v=1782391814'
     ],
-    shortDesc: 'Instant Grey Hair Coverage & Root Touch-Up with Dual Comb Applicator. Sweatproof & Water-Resistant.',
-    description: 'InstaBlack 2-in-1 Root Touch-Up Stick is your ultimate quick fix for instant grey hair coverage between salon visits. Formulated with natural botanical extracts and charcoal pigments, it glides smoothly on your hairline, roots, and sideburns without flaking or clumping.',
+    shortDesc: 'Wireless Fast Heating Pad with 3 Thermal Levels & Built-in Vibration Massage for Period Pain & Back Cramps.',
+    description: "Your Period Doesn't Have to Be Painful. That heavy, cramping pain that hits every month — the kind that makes you want to curl up and not move. WarmEase was made for exactly that moment. A portable heating belt with built-in vibration massage that delivers targeted relief to your lower abdomen or back, exactly where it hurts. No more hot water bottles that go cold in 10 minutes. WarmEase is wireless, wearable, and works while you go about your day.",
     features: [
-      'Instant 10-Second Grey Coverage for Hairline & Roots',
-      '2-in-1 Precision Applicator Comb + Crayon Stick',
-      'Waterproof, Sweatproof & Smudge-Proof All-Day Formula',
-      'Washes off easily with regular hair shampoo',
-      'Compact lipstick-sized tube for quick handbag touch-ups'
+      '3 Temperature Settings — Choose gentle warmth or intense heat based on your body needs',
+      'Vibrating Massage Mode — Combines thermal heat with massage for faster, deeper relief',
+      '3-Second Fast Heating — Instant warmth with no waiting around when pain strikes',
+      'Large Heating Area — Covers full lower abdomen and lower back',
+      'Wireless & Wearable — Wear comfortably under loose clothing and move freely'
     ],
     keyIcons: [
-      { iconName: 'Sparkles', title: 'Instant Coverage', subtitle: '10-sec grey fix' },
-      { iconName: 'Droplets', title: 'Sweatproof', subtitle: 'Lasts all day' },
-      { iconName: 'ShieldCheck', title: 'Safe Formula', subtitle: 'No harsh chemicals' }
+      { iconName: 'Sparkles', title: '3-Sec Heating', subtitle: 'Instant relief' },
+      { iconName: 'Zap', title: 'Vibration Massage', subtitle: '3 Speed modes' },
+      { iconName: 'ShieldCheck', title: 'Wireless Wearable', subtitle: 'All-day comfort' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Wear & Secure', desc: 'Wrap the belt comfortably around your lower abdomen or back and fasten elastic velcro strap.' },
+      { stepNumber: 2, title: 'Turn On & Heat', desc: 'Long press the power button for 2 seconds to activate instant 3-second thermal heating.' },
+      { stepNumber: 3, title: 'Select Massage', desc: 'Press the massage button to cycle through 3 vibration levels for rapid cramp relief.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Wellness & Body Care' },
+      { label: 'Material', value: 'Soft Lycra & Premium Velvet' },
+      { label: 'Power Source', value: 'USB Type-C Rechargeable' },
+      { label: 'Heat Modes', value: '3 Temperature Settings (45°C, 55°C, 65°C)' },
+      { label: 'Massage Modes', value: '3 Speed Vibration Levels' },
+      { label: 'Country of Origin', value: 'India' }
+    ],
+    bundles: [
+      {
+        id: 'single',
+        name: 'Single Piece',
+        price: 1099,
+        originalPrice: 2199,
+        savingsText: 'You save 50%'
+      },
+      {
+        id: 'pack-of-2',
+        name: 'Pack of 2 (Special Offer)',
+        price: 1899,
+        originalPrice: 4398,
+        savingsText: 'You save 57%',
+        isPopular: true
+      }
+    ]
+  },
+  {
+    id: 'indigoflow-smocked-midi-dress',
+    name: 'IndigoFlow™ Smocked Midi Dress — Effortless Everyday Style for Women',
+    supplier: 'Dropship India',
+    cost: 250,
+    sellPrice: 899,
+    mrp: 1799,
+    category: "Women's Fashion",
+    isHero: true,
+    tag: 'Trending Outfit',
+    rating: 4.8,
+    reviewCount: 2410,
+    happyCustomersText: '20,000+ Happy Women',
+    stockCount: 15,
+    images: [
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_18_42_PM.png?v=1782395395',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_21_07_PM.png?v=1782395739',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_21_07_PM2.png?v=1782395740',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_21_07_PM3.png?v=1782395740',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_21_07_PM4.png?v=1782395740'
+    ],
+    shortDesc: 'Flattering Smocked Bodice Midi Dress with Adjustable Straps & Flowy Breathable Silhouette.',
+    description: "The Dress You'll Reach For Every Time. Some pieces just make getting dressed easy. This smocked midi dress is one of them — a flattering, relaxed silhouette with a ruched bodice that cinches naturally at the right places, flowing into a full midi skirt that moves beautifully with you. Wear it to brunch, family outings, day dates, or casual evenings.",
+    features: [
+      'Smocked Bodice — Stretchy, self-adjusting fit that flatters all body types',
+      'Midi Length — Modest, versatile, comfortable for all-day wear',
+      'Adjustable Straps — Customize the fit precisely to your frame',
+      'Flowy Skirt — Lightweight and breathable fabric ideal for summer',
+      'Available XS to XXXL — Because every woman deserves a perfect fit'
+    ],
+    keyIcons: [
+      { iconName: 'Sparkles', title: 'Smocked Bodice', subtitle: 'Self-adjusting fit' },
+      { iconName: 'Feather', title: 'Flowy & Light', subtitle: 'Breathable fabric' },
+      { iconName: 'Heart', title: 'XS to XXXL', subtitle: 'All body shapes' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Slip On Effortlessly', desc: 'Step into dress or slip over head with self-adjusting elastic smocked bodice.' },
+      { stepNumber: 2, title: 'Adjust Shoulder Straps', desc: 'Tweak shoulder tie straps to achieve your ideal fit and neckline height.' },
+      { stepNumber: 3, title: 'Style & Enjoy', desc: 'Pair with flat sandals for daytime outings or heels for evening occasions.' }
+    ],
+    specifications: [
+      { label: 'Category', value: "Women's Fashion" },
+      { label: 'Fabric', value: '100% Breathable Rayon Cotton Blend' },
+      { label: 'Fit Type', value: 'Smocked Bodice / Flowy Midi A-Line' },
+      { label: 'Sizes Available', value: 'XS, S, M, L, XL, XXL, XXXL' },
+      { label: 'Wash Care', value: 'Gentle Machine Wash / Hand Wash' },
+      { label: 'Country of Origin', value: 'India' }
+    ],
+    bundles: [
+      {
+        id: 'single',
+        name: 'Single Dress',
+        price: 899,
+        originalPrice: 1799,
+        savingsText: 'You save 50%'
+      },
+      {
+        id: 'pack-of-2',
+        name: 'Pack of 2 (Combo colors)',
+        price: 1599,
+        originalPrice: 3598,
+        savingsText: 'You save 55%',
+        isPopular: true
+      }
+    ]
+  },
+  {
+    id: 'postureright-back-support-belt',
+    name: 'PostureRight™ Unisex Back Support Belt — Fix Your Posture, Relieve Back Pain',
+    supplier: 'Dropship India',
+    cost: 180,
+    sellPrice: 699,
+    mrp: 1499,
+    category: 'Wellness & Body Care',
+    isHero: true,
+    tag: 'Doctor Recommended',
+    rating: 4.8,
+    reviewCount: 4520,
+    happyCustomersText: '40,000+ Back Pain Relieved',
+    stockCount: 18,
+    images: [
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_48_59_PM.png?v=1782394090',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_00_32_PM.png?v=1782394258',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_52_24_PM.png?v=1782394090',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1768376932283-29.jpg?v=1782162969',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H59f05d7b7cf648cfbb8f93963d16c187B.jpg?v=1782391816'
+    ],
+    shortDesc: 'Ergonomic Adjustable Back Support Brace to Realign Spine & Correct Slouching.',
+    description: "Your Back Has Been Trying to Tell You Something. That dull ache after a long day at your desk, rounded shoulders in photos, or stiffness after sitting through back-to-back meetings. PostureRight is a fully adjustable back brace that gently pulls your shoulders back into proper alignment, reminding your muscles what good posture actually feels like.",
+    features: [
+      'Gentle Corrective Support — Guides spine into proper alignment without pain',
+      'Helps Relieve Rounded Back — Targets desk-job slouching & shoulder strain',
+      'Fully Adjustable Straps — Universal fit for both men and women',
+      'Strong Breathable Material — Wear comfortably under or over clothes',
+      'Builds Muscle Memory — Daily 20-min use maintains posture naturally'
+    ],
+    keyIcons: [
+      { iconName: 'Layers', title: 'Spine Support', subtitle: 'Gentle alignment' },
+      { iconName: 'Shield', title: 'Adjustable Fit', subtitle: 'Men & Women' },
+      { iconName: 'Feather', title: 'Breathable Material', subtitle: 'All-day wear' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Wear Like Backpack', desc: 'Slip arm loops over shoulders like wearing a backpack.' },
+      { stepNumber: 2, title: 'Adjust Tension', desc: 'Pull dual waist straps forward until shoulders gently align backward.' },
+      { stepNumber: 3, title: 'Build Posture Habit', desc: 'Wear 20-30 minutes daily at desk to build natural muscle memory.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Wellness & Body Care' },
+      { label: 'Material', value: 'High-Density Breathable Neoprene Mesh' },
+      { label: 'Closure', value: 'Heavy-Duty Adjustable Velcro' },
+      { label: 'Target Alignment', value: 'Spine, Shoulders & Upper Back' },
+      { label: 'Gender', value: 'Unisex (Men & Women)' },
+      { label: 'Country of Origin', value: 'India' }
+    ],
+    bundles: [
+      {
+        id: 'single',
+        name: 'Single Brace',
+        price: 699,
+        originalPrice: 1499,
+        savingsText: 'You save 53%'
+      },
+      {
+        id: 'pack-of-2',
+        name: 'Pack of 2 (For Couple / Office)',
+        price: 1199,
+        originalPrice: 2998,
+        savingsText: 'You save 60%',
+        isPopular: true
+      }
+    ]
+  },
+  {
+    id: 'cool-gel-full-face-mask',
+    name: 'Cool Gel Full Face Mask Summer Ice Cooling Sleeping Mask',
+    supplier: 'Dropship India',
+    cost: 390,
+    sellPrice: 799,
+    mrp: 1499,
+    category: 'Beauty & Haircare',
+    isHero: true,
+    tag: 'Summer Cooling Must-Have',
+    rating: 4.7,
+    reviewCount: 1820,
+    happyCustomersText: '15,000+ Refreshed Users',
+    stockCount: 10,
+    images: [
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216478-1.jpg?v=1782162864',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216728-6.jpg?v=1782162863',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216648-10.jpg?v=1782162864',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216698-14.jpg?v=1782162863',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216749-17.jpg?v=1782162863',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216808-20.jpg?v=1782162863',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1738141216836-22.jpg?v=1782162863'
+    ],
+    shortDesc: 'Reusable Ice Gel Full Face Mask for Puffy Eyes, Migraine Relief & Summer Skin Cooling.',
+    description: 'Experience instant icy cooling relief for tired eyes, facial fatigue, and summer heat. The Cool Gel Full Face Mask contours comfortably to your face, soothing inflammation, reducing dark circles and puffiness, and promoting deep, restful sleep.',
+    features: [
+      'Dual Hot & Cold Therapy — Freeze for ice cooling or warm up for soothing tension relief',
+      'Reduces Eye Puffiness & Dark Circles — Ideal after long screen hours or outdoor sun',
+      'Adjustable Velcro Straps — Fits securely and comfortably around all head sizes',
+      'Medical-Grade Flexible Gel Beads — Conforms perfectly to facial curves even when frozen'
+    ],
+    keyIcons: [
+      { iconName: 'Sparkles', title: 'Hot & Cold Therapy', subtitle: 'Dual relief modes' },
+      { iconName: 'Droplets', title: 'Anti-Puffiness', subtitle: 'Soothes tired eyes' },
+      { iconName: 'ShieldCheck', title: 'Medical Gel', subtitle: 'Safe & reusable' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Chill or Heat', desc: 'Freeze for 20 minutes for ice cooling, or microwave 10 seconds for warm relaxation.' },
+      { stepNumber: 2, title: 'Secure Mask', desc: 'Place contoured gel mask over eyes and face, securing velcro strap behind head.' },
+      { stepNumber: 3, title: 'Soothe & Refresh', desc: 'Rest for 15-20 minutes to relieve puffy eyes, dark circles, and headaches.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Beauty & Haircare' },
+      { label: 'Material', value: 'Medical-Grade Gel Beads & Ultra-Soft PVC' },
+      { label: 'Therapy Type', value: 'Dual Hot & Cold Gel Compress' },
+      { label: 'Reusability', value: '100% Reusable & Washable' },
+      { label: 'Size', value: 'Free Size with Adjustable Strap' },
+      { label: 'Country of Origin', value: 'India' }
+    ],
+    bundles: [
+      {
+        id: 'single',
+        name: 'Single Mask',
+        price: 799,
+        originalPrice: 1499,
+        savingsText: 'You save 47%'
+      },
+      {
+        id: 'pack-of-2',
+        name: 'Pack of 2 (For You & Partner)',
+        price: 1399,
+        originalPrice: 2998,
+        savingsText: 'You save 53%',
+        isPopular: true
+      }
+    ]
+  },
+  {
+    id: 'glowsheet-korean-collagen-mask',
+    name: 'GlowSheet™ Korean Overnight Bio-Collagen Face Mask — Glass Skin',
+    supplier: 'Dropship India',
+    cost: 150,
+    sellPrice: 499,
+    mrp: 999,
+    category: 'Beauty & Haircare',
+    isHero: false,
+    tag: 'Viral K-Beauty Mask',
+    rating: 4.9,
+    reviewCount: 3120,
+    happyCustomersText: '35,000+ Glass Skin Transformations',
+    stockCount: 25,
+    images: [
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1740481846929-234.jpg?v=1782162785'
+    ],
+    shortDesc: 'Deep Collagen Overnight Hydrogel Mask for Pore Shrinking & Luminous Glass Skin Glow.',
+    description: "Glass Skin Isn't a Filter. It's a Skincare Routine. GlowSheet's overnight bio-collagen face mask delivers a full dose of deep hydration and low-molecular collagen while you sleep. The hydrogel sheet turns transparent as your skin absorbs the serum, leaving you with visibly plumper, smoother, and glowing glass skin by morning.",
+    features: [
+      'Real Bio-Collagen Formula — Locks in deep hydration and supports elasticity overnight',
+      'Hydrating & Pore Minimizing — Skin feels tighter, smoother, and luminous',
+      'Hydrogel Technology — Turns transparent as active serum penetrates deep layers',
+      'Formulated in Korea — The gold standard in overnight glass skin glow'
+    ],
+    keyIcons: [
+      { iconName: 'Sparkles', title: 'Overnight Glow', subtitle: 'Turns transparent' },
+      { iconName: 'Droplets', title: 'Deep Hydration', subtitle: 'Low-molecular collagen' },
+      { iconName: 'ShieldCheck', title: 'Pore Minimizing', subtitle: 'Smooth glass finish' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Cleanse Face', desc: 'Wash face thoroughly with mild cleanser and pat dry before sleeping.' },
+      { stepNumber: 2, title: 'Apply Mask Sheet', desc: 'Peel protective film and smooth hydrogel mask evenly over face.' },
+      { stepNumber: 3, title: 'Overnight Glow', desc: 'Leave on overnight. Mask turns transparent as bio-collagen absorbs into skin.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Beauty & Haircare' },
+      { label: 'Active Formula', value: 'Low-Molecular Bio-Collagen & Hyaluronic Acid' },
+      { label: 'Formulation', value: '100% Non-Toxic Korean Hydrogel' },
+      { label: 'Skin Suitability', value: 'Dermatologically Tested (All Skin Types)' },
+      { label: 'Quantity', value: '34g Deep Collagen Sheet' },
+      { label: 'Country of Origin', value: 'South Korea' }
+    ],
+    bundles: [
+      {
+        id: 'single',
+        name: 'Single Sheet',
+        price: 499,
+        originalPrice: 999,
+        savingsText: 'You save 50%'
+      },
+      {
+        id: 'pack-of-3',
+        name: 'Pack of 3 (1-Month Treatment)',
+        price: 1199,
+        originalPrice: 2997,
+        savingsText: 'You save 60%',
+        isPopular: true
+      }
+    ]
+  },
+  {
+    id: 'japcounter-digital-jaap-mala',
+    name: 'JapCounter™ — Digital Jaap Mala with Built-In Counter',
+    supplier: 'Dropship India',
+    cost: 250,
+    sellPrice: 599,
+    mrp: 1299,
+    category: 'Spiritual & Devotional',
+    isHero: false,
+    tag: 'Top Devotional Pick',
+    rating: 4.9,
+    reviewCount: 4120,
+    happyCustomersText: '45,000+ Devotees Trust Us',
+    stockCount: 14,
+    images: [
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_41_52_PM.png?v=1782393448',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_45_31_PM_b084f013-a282-4818-9f7e-f09d89032cda.png?v=1782393719',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_45_31_PM.png?v=1782393626',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_56_20_PM.png?v=1782394036',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/cmimgopt-c61d5ba8-31a9-4f1f-9099-311179a16ce2.webp?v=1782162649'
+    ],
+    shortDesc: 'Handcrafted Wooden Digital Prayer Mala with LCD Counter, Reset Button & Tassel.',
+    description: 'Your Jaap, Counted Perfectly. Every Time. Never lose count of your jaap again. This beautifully handcrafted wooden mala comes with a built-in digital counter, so you can stay fully present in your mantra practice — without breaking focus to keep count.',
+    features: [
+      'Built-In Digital Counter — Accurate count every single time with easy reset button',
+      'Handcrafted Wooden Design — Warm, natural finish that feels good in hand',
+      'One-Hand Smooth Scroll — Count effortlessly with a single thumb press',
+      'Compact & Portable — Carry to temple or keep on home altar',
+      'Traditional Tassel Detailing — Classic devotional aesthetic'
+    ],
+    keyIcons: [
+      { iconName: 'RotateCcw', title: 'One-Touch Reset', subtitle: '108 chant tracking' },
+      { iconName: 'Battery', title: 'Long Battery Life', subtitle: '6+ months standby' },
+      { iconName: 'Heart', title: 'Ergonomic Wood', subtitle: 'Comfortable holding' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Hold Comfortably', desc: 'Grasp wooden mala in right hand with thumb resting on the scroll roller.' },
+      { stepNumber: 2, title: 'Scroll & Chant', desc: 'Scroll down with thumb after each mantra chant; LCD display increments count.' },
+      { stepNumber: 3, title: 'Reset Round', desc: 'Press top reset button to zero out count when starting a new 108 jaap cycle.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Spiritual & Devotional' },
+      { label: 'Material', value: 'Handcrafted Hardwood & Brass Accents' },
+      { label: 'Counter Type', value: '5-Digit LCD Digital Screen (0-99,999)' },
+      { label: 'Battery Life', value: 'Built-in Button Cell (6+ Months Standby)' },
+      { label: 'Special Feature', value: 'One-Touch Instant Reset Switch' },
+      { label: 'Country of Origin', value: 'India' }
     ],
     bundles: [
       {
@@ -46,97 +389,128 @@ export const PRODUCTS: Product[] = [
       },
       {
         id: 'pack-of-2',
-        name: 'Pack of 2 (Recommended)',
+        name: 'Pack of 2 (For Family/Gifting)',
         price: 999,
         originalPrice: 2598,
-        savingsText: 'You save 62%',
+        savingsText: 'You save 61%',
         isPopular: true
       }
     ]
   },
   {
-    id: 'japcounter-digital-jaap-mala',
-    name: 'JapCounter™ Digital Jaap Mala with Tally Counter',
+    id: 'miniblend-portable-juice-blender',
+    name: 'MiniBlend™ Portable Juice Blender Bottle — Fresh Juice & Shakes Anywhere',
     supplier: 'Dropship India',
-    cost: 250,
-    sellPrice: 699,
-    mrp: 1499,
-    category: 'Spiritual & Devotion',
-    isHero: true,
-    tag: 'Trending Spiritual Gear',
-    rating: 4.9,
-    reviewCount: 4120,
-    happyCustomersText: '45,000+ Devotees Trust Us',
-    stockCount: 14,
+    cost: 295,
+    sellPrice: 899,
+    mrp: 1799,
+    category: 'Wellness & Body Care',
+    isHero: false,
+    tag: 'Hot Ad Product',
+    rating: 4.8,
+    reviewCount: 3100,
+    happyCustomersText: '28,000+ Smoothie Lovers',
+    stockCount: 11,
     images: [
-      'https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=800&auto=format&fit=crop'
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175429.png?v=1786367100',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175444.png?v=1786367100',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175457.png?v=1786367100',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175511.png?v=1786367099',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175540.png?v=1786367098',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Screenshot_2026-08-10_175526.png?v=1786367099'
     ],
-    shortDesc: 'Handheld Smart Digital Tally Counter for Mantras, Jaap & Prayers with Soft Ring Finger Grip.',
-    description: 'JapCounter™ Digital Jaap Mala combines traditional devotion with modern digital convenience. Features smooth scrolling roller wheel, clear LED tally counter display, auto-sleep battery saving mode, and ergonomic wood-texture body with traditional tassel.',
+    shortDesc: 'Rechargeable Personal Smoothie Blender Bottle with 3D Blades & Travel Carry Handle.',
+    description: 'Fresh-Blended, Anywhere You Go. Gym bag, office desk, travel kit — your blender now fits wherever you go. This portable mini blender lets you make fresh juice, protein shakes, or fruit smoothies in seconds without lugging around a bulky appliance.',
     features: [
-      'One-Touch Smooth Scroll Counter with LCD Display',
-      'Built-in Reset Button for 108 Chant Tracking',
-      'Ergonomic Ring Grip suitable for all finger sizes',
-      'Long-lasting replaced button battery included',
-      'Ideal for Radhe Radhe, Mahamrityunjaya, Gayatri Mantra jaap'
+      'Blends in 10 Seconds — Sharp blades crush fruit, ice, and protein powder effortlessly',
+      'Blend & Drink in One Bottle — No transferring, no extra dishes to wash',
+      'Compact & Portable — Fits in your gym bag, car cupholder, or office desk',
+      'Easy to Clean — Self-cleaning mode with water and soap drop'
     ],
     keyIcons: [
-      { iconName: 'RotateCcw', title: 'One-Touch Reset', subtitle: 'Easy 108 tracking' },
-      { iconName: 'Battery', title: 'Long Battery Life', subtitle: '6+ months standby' },
-      { iconName: 'Heart', title: 'Ergonomic Grip', subtitle: 'Comfortable holding' }
+      { iconName: 'BatteryCharging', title: 'USB Rechargeable', subtitle: 'Fast charging' },
+      { iconName: 'Zap', title: '10s Blend Speed', subtitle: '3D stainless blades' },
+      { iconName: 'Luggage', title: 'Travel Friendly', subtitle: 'Fits in gym bag' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Add Fruit & Liquid', desc: 'Chop fruits into small pieces, add water or milk, and close cap tightly.' },
+      { stepNumber: 2, title: 'Double Click Power', desc: 'Turn bottle upside down and double-press power button to spin blades.' },
+      { stepNumber: 3, title: 'Drink & Travel', desc: 'Blend for 10-20 seconds. Sip directly from bottle or attach carry cap.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Wellness & Body Care' },
+      { label: 'Capacity', value: '400ml Personal Travel Bottle' },
+      { label: 'Blades', value: '6 Stainless Steel 3D Serrated Blades' },
+      { label: 'Battery', value: '1200mAh USB Rechargeable (10+ Blends/Charge)' },
+      { label: 'Material', value: 'BPA-Free Food-Grade Tritan Plastic' },
+      { label: 'Country of Origin', value: 'India' }
     ],
     bundles: [
       {
         id: 'single',
-        name: 'Single Piece',
-        price: 699,
-        originalPrice: 1499,
-        savingsText: 'You save 53%'
+        name: 'Single Bottle',
+        price: 899,
+        originalPrice: 1799,
+        savingsText: 'You save 50%'
       },
       {
         id: 'pack-of-2',
-        name: 'Pack of 2 (For Family/Gifting)',
-        price: 1199,
-        originalPrice: 2998,
-        savingsText: 'You save 60%',
+        name: 'Pack of 2 (For Couple)',
+        price: 1599,
+        originalPrice: 3598,
+        savingsText: 'You save 55%',
         isPopular: true
       }
     ]
   },
   {
     id: 'high-waist-tummy-tucker-shapewear',
-    name: '4-in-1 High Waist Tummy Tucker Shapewear',
+    name: 'High Waist Tummy Tucker Shapewear — Seamless Body Shaper for Women',
     supplier: 'Dropship India',
     cost: 175,
     sellPrice: 599,
     mrp: 1599,
     category: "Women's Fashion",
-    isHero: true,
+    isHero: false,
     tag: 'Viral Bestseller',
     rating: 4.7,
     reviewCount: 5290,
     happyCustomersText: '50,000+ Women Sculpted',
     stockCount: 7,
     images: [
-      'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=800&auto=format&fit=crop'
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_38_34_PM.png?v=1782396533',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H7e1827a8eabc476d9fe4bb71b55e5f9d6.jpg?v=1782391812',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/cmimgopt-e4e37ffe-2c9e-4896-8c15-2e51f621a006.webp?v=1782162450',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/cmimgopt-54e37d55-5e6b-4889-ae59-d1bdf209f18d.webp?v=1782162450',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/Hc84fbb0ff1134e42844c73b8b9002002d.jpg?v=1782391813',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/cmimgopt-47189b95-c688-41d8-b7ff-4c00624d98af.webp?v=1782162452',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/cmimgopt-71b59894-5358-40f6-b922-272d67811edd.webp?v=1782162449'
     ],
-    shortDesc: 'Instant Tummy Flattening, Waist Sculpting & Thigh Slimming. Seamless & Anti-Roll Silicone Grip.',
-    description: 'Get an instant hour-glass silhouette with our 4-in-1 High Waist Tummy Tucker Shapewear. Crafted from ultra-breathable, stretchable Italian microfiber fabric that tucks tummy bulge, lifts buttocks, and slims thighs without showing lines under sarees, dresses, or jeans.',
+    shortDesc: 'Instant 4-in-1 Tummy Flattening, Waist Sculpting & Butt Lighter with Anti-Roll Silicone Strip.',
+    description: 'Look Smooth. Feel Confident. In Seconds. No more worrying about how your outfit fits. This 4-in-1 shapewear is designed to instantly smooth your tummy, shape your waist, and lift your hips — so you can walk into any event feeling put-together under sarees, dresses, jeans, and fitted outfits.',
     features: [
-      'Reduces Waistline up to 2 Inches Instantly',
-      'Anti-Roll Silicone Strip prevents waistband slipping',
-      'Targeted 360° Compression on Tummy & Midsection',
-      'Lightweight, Moisture-Wicking Breathable Fabric',
-      '100% Invisible under Sarees, Kurtis & Bodycon Dresses'
+      '4-in-1 Shaping — Tummy control, waist shaping, hip lift, and thigh smoothing in one piece',
+      'Totally Invisible — Seamless edges mean zero visible panty lines under tight clothing',
+      'All-Day Comfort — Soft, stretchable, breathable fabric that moves with you',
+      'Anti-Roll Silicone Strip — Stays securely in place without rolling down'
     ],
     keyIcons: [
-      { iconName: 'Layers', title: '360° Sculpting', subtitle: 'Tummy & hip shape' },
+      { iconName: 'Layers', title: '360° Sculpting', subtitle: 'Tummy & waist shape' },
       { iconName: 'Feather', title: 'Breathable Fabric', subtitle: 'All-day wearability' },
       { iconName: 'Shield', title: 'Anti-Roll Strip', subtitle: 'Stays in place' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Step Into Legs', desc: 'Roll down waistband and step feet into leg openings.' },
+      { stepNumber: 2, title: 'Pull Up High', desc: 'Smoothly pull shapewear up over thighs and hips up to underbust line.' },
+      { stepNumber: 3, title: 'Smooth & Fit', desc: 'Ensure anti-roll silicone waistband sits flat against skin under sarees or dresses.' }
+    ],
+    specifications: [
+      { label: 'Category', value: "Women's Fashion" },
+      { label: 'Fabric', value: 'Seamless Nylon Microfiber & High-Stretch Spandex' },
+      { label: 'Control Level', value: 'Firm 360° Tummy, Waist & Hip Sculpting' },
+      { label: 'Feature', value: 'Anti-Roll Dual Silicone Waistband' },
+      { label: 'Sizes Available', value: 'S, M, L, XL, XXL, XXXL' },
+      { label: 'Country of Origin', value: 'India' }
     ],
     hasSizeGuide: true,
     bundles: [
@@ -158,199 +532,71 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'miniblend-portable-juice-blender',
-    name: 'MiniBlend™ Portable USB Electric Juice Blender Bottle',
+    id: 'instablack-touchup-stick',
+    name: 'InstaBlack 2-in-1 Root Touch-Up Stick — Waterproof Instant Hair Color',
     supplier: 'Dropship India',
-    cost: 295,
-    sellPrice: 799,
-    mrp: 1699,
-    category: 'Wellness & Fitness',
-    isHero: true,
-    tag: 'Hot Ad Product',
+    cost: 200,
+    sellPrice: 599,
+    mrp: 1299,
+    category: 'Beauty & Haircare',
+    isHero: false,
+    tag: 'Running Ad | Best Seller',
     rating: 4.8,
-    reviewCount: 3100,
-    happyCustomersText: '28,000+ Smoothie Lovers',
-    stockCount: 11,
+    reviewCount: 3840,
+    happyCustomersText: '36,000+ Happy Customers',
+    stockCount: 9,
     images: [
-      'https://images.unsplash.com/photo-1570222094114-d054a817e56b?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1553530666-ba11a7da3888?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=800&auto=format&fit=crop'
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_25_18_PM.png?v=1782392165',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_04_14_44_PM3.png?v=1782391732',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_04_14_44_PM2.png?v=1782391732',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_04_14_44_PM_-_Copy.png?v=1782391732',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_04_14_44_PM4.png?v=1782391732',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H399f00aa260c470da8dd48b9158986544.jpg?v=1782396670',
+      'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/H98648758ed844deeb7bbb4f126b1faceM.jpg?v=1782391812'
     ],
-    shortDesc: 'Rechargeable 350ml Personal Smoothie Blender with 6 Stainless Steel 3D Blades & Travel Carry Handle.',
-    description: 'Blend fresh protein shakes, fruit smoothies, baby food, and iced juices on the go with MiniBlend™. Powerful 1400mAh battery delivers up to 15 blends per single USB charge. Easy self-cleaning mode — just add water, drop of dish soap, and press blend!',
+    shortDesc: 'Instant 2-Minute Grey Coverage Stick with Built-In Comb Applicator. Sweatproof & Waterproof.',
+    description: 'Grey Roots? Gone in 2 Minutes. Cover greys in under 2 minutes — no mixing, no mess, no salon visit. Just twist, comb, and go. This 2-in-1 instant hair color stick comes with a built-in comb applicator so you can touch up your roots anywhere.',
     features: [
-      '6 Stainless Steel 3D Serrated Blending Blades',
-      'USB Rechargeable (Charge via Powerbank, Laptop, Adapter)',
-      'BPA-Free Food Grade PCTG Material with Silicone Strap',
-      'Safety Induction Lock prevents blade spinning when open',
-      'Ultra Compact 350ml Bottle fits gym bag & car cup holder'
+      'Instant Coverage — Greys disappear in under 2 minutes',
+      'Built-In Comb Applicator — Precise application, no brushes or gloves needed',
+      'Waterproof & Sweat-Proof — Stays put through humidity, workouts, and rain',
+      'Long-Lasting — Touch-up lasts until your next hair wash',
+      'Travel-Friendly — Compact stick fits easily in any handbag'
     ],
     keyIcons: [
-      { iconName: 'BatteryCharging', title: 'Rechargeable', subtitle: 'USB Fast Charging' },
-      { iconName: 'Zap', title: '3D 6 Blades', subtitle: 'Instant 30s Blend' },
-      { iconName: 'Luggage', title: 'Travel Friendly', subtitle: 'Lightweight 350ml' }
+      { iconName: 'Sparkles', title: 'Instant Coverage', subtitle: '2-min grey fix' },
+      { iconName: 'Droplets', title: 'Sweatproof', subtitle: 'Lasts all day' },
+      { iconName: 'ShieldCheck', title: 'Safe Formula', subtitle: 'No harsh chemicals' }
+    ],
+    howToUseSteps: [
+      { stepNumber: 1, title: 'Uncap & Twist', desc: 'Remove cap and gently twist base to expose touch-up stick tip.' },
+      { stepNumber: 2, title: 'Comb Over Greys', desc: 'Glide built-in comb applicator directly onto grey roots or thin hairline spots.' },
+      { stepNumber: 3, title: 'Fast Dry in 10s', desc: 'Dries naturally in 10 seconds. Enjoy 100% sweatproof coverage until next wash.' }
+    ],
+    specifications: [
+      { label: 'Category', value: 'Beauty & Haircare' },
+      { label: 'Formulation', value: 'Natural Herbal Wax & Botanical Pigments' },
+      { label: 'Waterproof', value: '100% Sweatproof & Rainproof' },
+      { label: 'Shade', value: 'Natural Jet Black' },
+      { label: 'Shelf Life', value: '24 Months' },
+      { label: 'Country of Origin', value: 'India' }
     ],
     bundles: [
       {
         id: 'single',
-        name: 'Single Piece',
-        price: 799,
-        originalPrice: 1699,
-        savingsText: 'You save 53%'
+        name: 'Single Stick',
+        price: 599,
+        originalPrice: 1299,
+        savingsText: 'You save 54%'
       },
       {
         id: 'pack-of-2',
-        name: 'Pack of 2 (Pink + White)',
-        price: 1499,
-        originalPrice: 3398,
-        savingsText: 'You save 56%',
+        name: 'Pack of 2 (Recommended)',
+        price: 999,
+        originalPrice: 2598,
+        savingsText: 'You save 62%',
         isPopular: true
       }
-    ]
-  },
-  {
-    id: 'warmease-heating-massage-belt',
-    name: 'WarmEase™ Portable Heating & Vibration Massage Belt',
-    supplier: 'Dropdash',
-    cost: 650,
-    sellPrice: 999,
-    mrp: 1999,
-    category: 'Wellness & Fitness',
-    isHero: false,
-    rating: 4.9,
-    reviewCount: 1890,
-    stockCount: 15,
-    images: [
-      'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'Wireless Fast Heating Pad with 3 Thermal Levels & 6 Vibration Modes for Period Cramp & Back Pain Relief.',
-    description: 'Instant soothing comfort during monthly periods or lower back muscle soreness. WarmEase™ heats up in 3 seconds using Graphene technology and delivers gentle vibration massage.',
-    features: [
-      '3 Heating Temperatures (50°C, 55°C, 60°C)',
-      '6 High-Frequency Soothing Vibration Modes',
-      'Adjustable Elastic Waist Belt fits all body sizes',
-      'USB Rechargeable Wireless Operation'
-    ]
-  },
-  {
-    id: 'indigoflow-smocked-midi-dress',
-    name: 'IndigoFlow™ Floral Smocked Bodice Midi Dress',
-    supplier: 'Dropship India',
-    cost: 250,
-    sellPrice: 699,
-    mrp: 1499,
-    category: "Women's Fashion",
-    isHero: false,
-    rating: 4.6,
-    reviewCount: 940,
-    stockCount: 12,
-    images: [
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'Flowy & Breathable Cotton Rayon Midi Dress with Stretchable Smocked Bust & Ruffle Sleeves.',
-    description: 'A breezy, stylish midi dress designed for effortless grace. Features elasticated smocked bodice that flatters every body shape and soft breathable fabric ideal for Indian climate.',
-    features: [
-      'Ultra Soft Viscose Rayon Fabric',
-      'Stretchable Smocked Chest fits Bust 32" to 42"',
-      'Flattering Tiered Midi Length with Ruffle Cap Sleeves'
-    ]
-  },
-  {
-    id: 'postureright-back-support-belt',
-    name: 'PostureRight™ Unisex Spine & Back Support Corrector Belt',
-    supplier: 'Dropship India',
-    cost: 180,
-    sellPrice: 599,
-    mrp: 1299,
-    category: 'Wellness & Fitness',
-    isHero: false,
-    rating: 4.7,
-    reviewCount: 1420,
-    stockCount: 18,
-    images: [
-      'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'Ergonomic Posture Corrector for Desk Workers & Drivers. Relieves Shoulder & Neck Strain.',
-    description: 'Retrain your posture in 21 days! PostureRight™ pulls shoulders back gently to realign your spine, preventing slouching during long hours of computer work or driving.',
-    features: [
-      'Adjustable Neoprene Straps with Soft Armpit Padding',
-      'Lightweight & Discreete under shirt or kurti',
-      'Relieves Upper Back, Neck & Shoulder stiffness'
-    ]
-  },
-  {
-    id: 'silkfoot-exfoliating-foot-mask',
-    name: 'SilkFoot™ AHA Exfoliating Foot Peel Mask Socks',
-    supplier: 'Dropship India',
-    cost: 180,
-    sellPrice: 499,
-    mrp: 999,
-    category: 'Beauty & Hair',
-    isHero: false,
-    rating: 4.8,
-    reviewCount: 2210,
-    stockCount: 22,
-    images: [
-      'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'Peels Away Dead Cracked Skin & Calluses in 7 Days for Baby Soft Smooth Feet.',
-    description: 'Enriched with botanical fruit acids, lavender oil, and aloe vera. Slip on the booties for 60 minutes, and watch dead skin naturally peel away over 5-7 days.',
-    features: [
-      'Painless Natural Exfoliation Booties',
-      'Removes Stubborn Heel Cracks & Dead Cuticles',
-      'Infused with Hydrating Aloe & Lavender'
-    ]
-  },
-  {
-    id: 'glowsheet-korean-collagen-mask',
-    name: 'GlowSheet™ Korean Overnight Bio-Collagen Face Mask',
-    supplier: 'Dropship India',
-    cost: 150,
-    sellPrice: 449,
-    mrp: 899,
-    category: 'Beauty & Hair',
-    isHero: false,
-    rating: 4.9,
-    reviewCount: 2850,
-    stockCount: 30,
-    images: [
-      'https://images.unsplash.com/photo-1512290900673-7002fe515286?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'Hydrogel Deep Collagen Mask that Turns Transparent Overnight for Glass Skin Glow.',
-    description: 'Infused with Oligo-Hyaluronic acid and low-molecular collagen that penetrates deep into skin layers, tightening pores and boosting elasticity overnight.',
-    features: [
-      'Turns Transparent as Skin Absorbs Active Serum',
-      'Deep Pore Minimizing & Hydration Lock',
-      'Suitable for All Skin Types including Sensitive'
-    ]
-  },
-  {
-    id: 'grindmaster-electric-coffee-grinder',
-    name: 'GrindMaster™ Stainless Steel Electric Spice & Coffee Grinder',
-    supplier: 'Dropdash',
-    cost: 460,
-    sellPrice: 999,
-    mrp: 1999,
-    category: 'Wellness & Fitness',
-    isHero: false,
-    rating: 4.7,
-    reviewCount: 1120,
-    stockCount: 16,
-    images: [
-      'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1589396575653-c09c794ff6a6?q=80&w=800&auto=format&fit=crop'
-    ],
-    shortDesc: 'High-Power One-Touch Grinder for Coffee Beans, Dry Spices, Nuts & Chutneys.',
-    description: 'Pulse control electric grinder with 150W copper motor and durable 304 food-grade stainless steel blades. Grinds coffee beans and Indian spices like cardamom, black pepper, and cumin in 10 seconds.',
-    features: [
-      '150W Powerful Copper Motor with Sharp SS Blades',
-      'Transparent Lid for Coarseness Monitoring',
-      'Compact & Easy to Wipe Clean'
     ]
   }
 ];
@@ -371,9 +617,9 @@ export const REVIEWS: Review[] = [
     location: 'Delhi NCR',
     rating: 5,
     date: '2 days ago',
-    comment: 'InstaBlack stick is a lifesaver before attending family weddings! Covered my grey roots at the temples in 30 seconds. COD was smooth and delivery reached in 3 days.',
+    comment: 'WarmEase heating belt is an absolute blessing during monthly period cramps! Heats up in 3 seconds and the vibration massage is super soothing.',
     verified: true,
-    productName: 'InstaBlack 2-in-1 Root Touch-Up Stick'
+    productName: 'WarmEase™ Portable Heating Massage Belt'
   },
   {
     id: 'rev-2',
@@ -391,9 +637,9 @@ export const REVIEWS: Review[] = [
     location: 'Pune, MH',
     rating: 5,
     date: '1 week ago',
-    comment: 'The tummy tucker shapewear gives incredible support under sarees! It does not roll down at all thanks to the silicone grip on top. Will order another color.',
+    comment: 'The IndigoFlow smocked midi dress fits like a dream! The fabric is so soft and comfortable for daily wear.',
     verified: true,
-    productName: '4-in-1 High Waist Tummy Tucker Shapewear'
+    productName: 'IndigoFlow™ Smocked Midi Dress'
   },
   {
     id: 'rev-4',
@@ -401,9 +647,59 @@ export const REVIEWS: Review[] = [
     location: 'Bengaluru, KA',
     rating: 5,
     date: '4 days ago',
-    comment: 'MiniBlend portable blender makes my morning protein shake super easy. I carry it directly to my gym. Blends banana and berries in 20 seconds!',
+    comment: 'GlowSheet Bio-Collagen mask gave me visible glass skin glow the next morning. My pores looked smaller and skin felt super plump.',
     verified: true,
-    productName: 'MiniBlend™ Portable Juice Blender'
+    productName: 'GlowSheet™ Korean Bio-Collagen Face Mask'
+  },
+  {
+    id: 'rev-5',
+    author: 'Rohan Kapoor',
+    location: 'Mumbai, MH',
+    rating: 5,
+    date: '2 days ago',
+    comment: 'PostureRight belt has reduced my upper back pain significantly during 9-hour work desk shifts. Easy to adjust and comfortable under shirts.',
+    verified: true,
+    productName: 'PostureRight™ Unisex Back Support Belt'
+  },
+  {
+    id: 'rev-6',
+    author: 'Kavita Joshi',
+    location: 'Jaipur, RJ',
+    rating: 5,
+    date: '5 days ago',
+    comment: 'Cool Gel Face Mask is amazing after coming home from hot summer sun! Soothes puffy eyes instantly. Very refreshing.',
+    verified: true,
+    productName: 'Cool Gel Full Face Mask'
+  },
+  {
+    id: 'rev-7',
+    author: 'Vikram Mehta',
+    location: 'Chandigarh',
+    rating: 5,
+    date: '3 days ago',
+    comment: 'MiniBlend portable blender is perfect for post-workout protein shakes at the gym. Blends fruits and ice in 10 seconds effortlessly!',
+    verified: true,
+    productName: 'MiniBlend™ Portable Juice Blender Bottle'
+  },
+  {
+    id: 'rev-8',
+    author: 'Shalini Saxena',
+    location: 'Kolkata, WB',
+    rating: 5,
+    date: '6 days ago',
+    comment: 'Tummy Tucker Shapewear gave me instant smooth silhouette under my designer saree! The anti-roll silicone strip really stays in place.',
+    verified: true,
+    productName: 'High Waist Tummy Tucker Shapewear'
+  },
+  {
+    id: 'rev-9',
+    author: 'Rajesh Gupta',
+    location: 'Ahmedabad, GJ',
+    rating: 5,
+    date: '1 day ago',
+    comment: 'InstaBlack touch-up stick covers my grey roots in 1 minute before office meetings. Sweatproof and looks completely natural!',
+    verified: true,
+    productName: 'InstaBlack 2-in-1 Root Touch-Up Stick'
   }
 ];
 

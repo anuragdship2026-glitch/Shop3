@@ -45,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({
               Categories
             </h4>
             <ul className="space-y-2 text-xs text-gray-300">
-              {['Beauty & Hair', "Women's Fashion", 'Wellness & Fitness', 'Spiritual & Devotion'].map((cat) => (
+              {['Beauty & Haircare', "Women's Fashion", 'Wellness & Body Care', 'Spiritual & Devotional'].map((cat) => (
                 <li key={cat}>
                   <button
                     onClick={() => onSelectCategory(cat)}

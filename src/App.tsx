@@ -232,30 +232,30 @@ export default function App() {
   const categoryCards = [
     {
       id: "Women's Fashion",
-      name: "Women's Shapewear & Fashion",
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
-      count: "Slimming & Comfort Essentials",
+      name: "Women's Fashion & Dresses",
+      image: "https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_18_42_PM.png?v=1782395395",
+      count: "Midi Dresses & Body Shapewear",
       badge: "Top Seller"
     },
     {
-      id: 'Beauty & Hair',
+      id: 'Beauty & Haircare',
       name: 'Beauty & Haircare',
-      image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=600',
-      count: 'Painless Hair Erasers & Grooming',
-      badge: 'Viral Tech'
+      image: 'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/1740481846929-234.jpg?v=1782162785',
+      count: 'K-Beauty Masks & Touch-Up Sticks',
+      badge: 'Viral Beauty'
     },
     {
-      id: 'Wellness & Fitness',
+      id: 'Wellness & Body Care',
       name: 'Wellness & Body Care',
-      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600',
-      count: 'Posture Correctors & Massagers',
+      image: 'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_08_59_PM.png?v=1782394850',
+      count: 'Heating Massagers & Back Belts',
       badge: 'Health Choice'
     },
     {
-      id: 'Spiritual & Devotion',
+      id: 'Spiritual & Devotional',
       name: 'Spiritual & Devotional',
-      image: 'https://images.unsplash.com/photo-1608389168343-ba8aa0eb3a63?auto=format&fit=crop&q=80&w=600',
-      count: 'Brass Diyas & Puja Accessories',
+      image: 'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_06_41_52_PM.png?v=1782393448',
+      count: 'Digital Jaap Malas & Devotional Gear',
       badge: 'Pooja Essential'
     }
   ];
@@ -440,7 +440,7 @@ export default function App() {
 
           {/* Category Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            {['All Products', 'Beauty & Hair', "Women's Fashion", 'Wellness & Fitness', 'Spiritual & Devotion'].map((cat) => {
+            {['All Products', 'Beauty & Haircare', "Women's Fashion", 'Wellness & Body Care', 'Spiritual & Devotional'].map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
                 <button
