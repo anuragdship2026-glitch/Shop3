@@ -13,9 +13,12 @@ import {
   ArrowLeft,
   MessageCircle,
   Copy,
-  Download,
+  Check,
   Info,
-  Tag
+  Tag,
+  Mail,
+  UserCheck,
+  Package
 } from 'lucide-react';
 
 interface CheckoutModalProps {
@@ -23,13 +26,15 @@ interface CheckoutModalProps {
   onClose: () => void;
   cartItems: CartItem[];
   onOrderSuccess: (order: Order) => void;
+  onViewMyOrders?: () => void;
 }
 
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
   cartItems,
-  onOrderSuccess
+  onOrderSuccess,
+  onViewMyOrders
 }) => {
   if (!isOpen) return null;
 
@@ -49,6 +54,30 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  // Pre-fill from existing session if available
+  React.useEffect(() => {
+    try {
+      const storedCust = localStorage.getItem('indigo_customer');
+      if (storedCust) {
+        const parsed = JSON.parse(storedCust);
+        if (parsed.name && !name) setName(parsed.name);
+        if (parsed.email && !email) setEmail(parsed.email);
+        if (parsed.phone && !phone) setPhone(parsed.phone);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => {
+      setCopiedKey(null);
+    }, 2000);
+  };
 
   const getItemPrice = (item: CartItem) => {
     if (item.selectedBundleId && item.product.bundles) {
@@ -86,10 +115,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-    if (!name.trim() || !phone.trim() || !address.trim() || !city.trim() || !pincode.trim()) {
-      setErrorMessage('Please fill in all mandatory delivery details.');
+
+    const cleanEmail = email.trim();
+    if (!name.trim() || !phone.trim() || !cleanEmail || !address.trim() || !city.trim() || !pincode.trim()) {
+      setErrorMessage('Please fill in all mandatory delivery details including your email.');
       return;
     }
+
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setErrorMessage('Please enter a valid email address for order confirmation.');
+      return;
+    }
+
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
     if (pincode.trim().length !== 6) {
       setErrorMessage('Please enter a valid 6-digit PIN code.');
       return;
@@ -97,14 +140,32 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep('PAYMENT');
   };
 
-  // Submit order to backend /api/create-order which syncs with Shopify Admin REST API
+  // Submit order to backend /api/create-order which syncs with Supabase and Shopify Admin REST API
   const submitOrderToBackend = async (extraData: {
     razorpayPaymentId?: string;
     razorpayOrderId?: string;
     razorpaySignature?: string;
   } = {}) => {
     try {
+      console.log('[CheckoutModal] Submitting order to /api/create-order...', {
+        paymentMethod,
+        finalAmount,
+        razorpayPaymentId: extraData.razorpayPaymentId,
+        customerName: name.trim()
+      });
+
+      const customerObj = {
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        address: address.trim(),
+        city: city.trim(),
+        state: state.trim(),
+        pincode: pincode.trim()
+      };
+
       const payload = {
+        customer: customerObj,
         customerName: name.trim(),
         phone: phone.trim(),
         email: email.trim(),
@@ -113,10 +174,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         state: state.trim(),
         pincode: pincode.trim(),
         cartItems,
-        paymentMethod,
+        paymentMethod: paymentMethod === 'COD' ? 'COD' : 'Prepaid UPI/Razorpay',
+        amount: finalAmount,
         finalAmount,
         codFee,
-        ...extraData
+        razorpayPaymentId: extraData.razorpayPaymentId || '',
+        razorpayOrderId: extraData.razorpayOrderId || '',
+        razorpaySignature: extraData.razorpaySignature || ''
       };
 
       const response = await fetch('/api/create-order', {
@@ -125,14 +189,25 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         body: JSON.stringify(payload)
       });
 
+      console.log('[CheckoutModal] /api/create-order HTTP status:', response.status);
+
       let responseData: any = {};
       try {
         responseData = await response.json();
+        console.log('[CheckoutModal] /api/create-order response data:', responseData);
       } catch (err) {
         console.warn('API JSON parse notice:', err);
       }
 
-      const estDate = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
+      // Auto-save session token & customer to localStorage for instant account creation
+      if (responseData?.token) {
+        localStorage.setItem('indigo_session', responseData.token);
+      }
+      if (responseData?.customer) {
+        localStorage.setItem('indigo_customer', JSON.stringify(responseData.customer));
+      }
+
+      const estDate = responseData?.estimatedDelivery || new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
@@ -141,18 +216,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
       const displayOrderId =
         responseData?.orderNumber ||
-        (responseData?.shopifyOrder?.name) ||
-        (responseData?.orderId) ||
+        responseData?.orderId ||
         `IND-${Math.floor(100000 + Math.random() * 900000)}`;
 
       const newOrder: Order = {
         id: displayOrderId,
-        orderNumber: responseData?.orderNumber || responseData?.shopifyOrder?.name || displayOrderId,
-        shopifyOrderId: responseData?.shopifyOrder?.id ? String(responseData.shopifyOrder.id) : undefined,
+        orderNumber: responseData?.orderNumber || displayOrderId,
+        shopifyOrderId: responseData?.shopifyOrderId ? String(responseData.shopifyOrderId) : undefined,
         pushedToShopify: Boolean(responseData?.pushedToShopify),
         razorpayPaymentId: extraData.razorpayPaymentId || undefined,
         items: cartItems,
-        customer: { name, phone, email, address, city, state, pincode },
+        customer: customerObj,
         paymentMethod: paymentMethod === 'COD' ? 'Cash on Delivery (COD)' : 'Prepaid UPI / Razorpay',
         totalAmount: subtotal,
         discount: 0,
@@ -161,15 +235,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         status: 'Confirmed',
         orderDate: new Date().toLocaleDateString('en-IN'),
         estimatedDelivery: estDate,
-        trackingNumber: responseData?.trackingNumber || ('DEL' + Math.floor(1000000000 + Math.random() * 9000000000))
+        trackingNumber: responseData?.trackingId || responseData?.trackingNumber || ('DEL' + Math.floor(1000000000 + Math.random() * 9000000000))
       };
 
       setPlacedOrder(newOrder);
       onOrderSuccess(newOrder);
       setStep('CONFIRMED');
     } catch (err: any) {
-      console.error('Order creation error:', err);
-      setErrorMessage('Order submission encountered an issue. Please try again.');
+      console.error('[CheckoutModal] Order creation error:', err);
+      setErrorMessage('Oops! Something went wrong while saving your order. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -208,6 +282,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           contact: phone.trim()
         },
         handler: async function (paymentResponse: any) {
+          console.log('[Razorpay] Payment Success Received!', paymentResponse);
           setIsProcessing(true);
           await submitOrderToBackend({
             razorpayPaymentId: paymentResponse.razorpay_payment_id,
@@ -217,6 +292,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         },
         modal: {
           ondismiss: function () {
+            console.log('[Razorpay] Modal closed by user');
             setIsProcessing(false);
           }
         }
@@ -225,6 +301,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       try {
         const razorpayInstance = new (window as any).Razorpay(options);
         razorpayInstance.on('payment.failed', function (failureResp: any) {
+          console.error('[Razorpay] Payment failed event:', failureResp);
           setIsProcessing(false);
           setErrorMessage(
             `Payment Failed: ${failureResp?.error?.description || failureResp?.error?.reason || 'Transaction was declined.'}`
@@ -282,11 +359,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {step !== 'CONFIRMED' && (
             <div className="flex items-center gap-2 text-xs font-bold mt-2">
               <span className={`px-2.5 py-1 rounded-full ${step === 'ADDRESS' ? 'bg-[#4b0082] text-white' : 'bg-gray-100 text-gray-500'}`}>
-                1. Delivery Address
+                1. Delivery Address & Email
               </span>
               <span className="text-gray-300">→</span>
               <span className={`px-2.5 py-1 rounded-full ${step === 'PAYMENT' ? 'bg-[#4b0082] text-white' : 'bg-gray-100 text-gray-500'}`}>
-                2. Payment & Order Summary
+                2. Payment & Confirmation
               </span>
             </div>
           )}
@@ -308,7 +385,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
         )}
 
-        {/* STEP 1: ADDRESS */}
+        {/* STEP 1: ADDRESS & MANDATORY EMAIL */}
         {step === 'ADDRESS' && (
           <form onSubmit={handleAddressSubmit} className="space-y-3">
             <h3 className="font-serif-brand text-lg font-bold text-[#2c2c2c]">
@@ -332,7 +409,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1">
-                  Mobile Number (For Delivery & Order Updates) *
+                  Mobile Number (For Delivery & SMS) *
                 </label>
                 <input
                   type="tel"
@@ -343,6 +420,28 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:border-[#4b0082]"
                 />
               </div>
+            </div>
+
+            {/* Mandatory Email Field */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
+                <span>Email Address (For Invoice & Order Tracking) *</span>
+                <span className="text-[10px] text-[#4b0082] bg-purple-50 px-1.5 py-0.5 rounded font-semibold">Mandatory</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. ananya@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:border-[#4b0082]"
+                />
+                <Mail className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
+              <p className="text-[10px] text-gray-500 mt-0.5">
+                We'll email your order invoice and create your VIP account automatically.
+              </p>
             </div>
 
             <div>
@@ -420,7 +519,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <span className="text-[11px] text-gray-500 block">({cartItems.length} item{cartItems.length > 1 ? 's' : ''})</span>
               </div>
               <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 text-[11px]">
-                🚚 Free Shipping
+                🚚 Free Pan-India Shipping
               </span>
             </div>
 
@@ -471,12 +570,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </span>
                 </div>
 
-                {/* Explanatory Callout when COD is active */}
                 {paymentMethod === 'COD' && (
                   <div className="mt-1 text-[11px] text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
                     <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-extrabold">COD Charge Breakdown:</span> A ₹50 convenience fee is added by logistics partners to handle physical cash collection & verification at your doorstep.
+                      <span className="font-extrabold">COD Convenience Charge:</span> A ₹50 convenience fee is added by logistics partners to handle physical cash collection & verification at your doorstep.
                     </div>
                   </div>
                 )}
@@ -526,7 +624,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             </div>
 
-            {/* Price Summary Box with Itemized COD Fee Line */}
+            {/* Price Summary Box */}
             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 text-xs space-y-2">
               <div className="flex justify-between text-gray-600">
                 <span>Items Subtotal ({cartItems.reduce((sum, i) => sum + i.quantity, 0)} items)</span>
@@ -538,7 +636,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <span className="text-emerald-700 font-bold">FREE (Pan-India)</span>
               </div>
 
-              {/* SEPARATE LINE ITEM FOR COD CONVENIENCE CHARGE */}
               <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-gray-800">COD Convenience Charge</span>
@@ -593,7 +690,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
         )}
 
-        {/* STEP 3: ORDER CONFIRMED */}
+        {/* STEP 3: ORDER CONFIRMED (DOES NOT AUTO-CLOSE) */}
         {step === 'CONFIRMED' && placedOrder && (
           <div className="text-center space-y-4 py-2">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
@@ -602,33 +699,67 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             <div>
               <span className="bg-[#c9a84c] text-[#2d004d] text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
-                Order Verified & Dispatching
+                Order Verified & Saved to Cloud
               </span>
               <h2 className="font-serif-brand text-2xl font-extrabold text-[#4b0082] mt-1">
                 Thank You, {placedOrder.customer.name}!
               </h2>
               <p className="text-xs text-gray-600 mt-1">
-                Your order has been received and sent to our fulfillment center.
+                Your order is confirmed and being prepared for express delivery.
               </p>
             </div>
 
-            {/* Order Details Card with Itemized COD Fee */}
+            {/* Account Auto-Created Badge */}
+            <div className="p-2.5 bg-purple-50 rounded-xl border border-[#4b0082]/20 text-xs text-[#4b0082] flex items-center justify-center gap-2 font-bold">
+              <UserCheck className="w-4 h-4 text-[#c9a84c]" />
+              <span>Account created automatically & saved to your profile!</span>
+            </div>
+
+            {/* Order Details Card with Copy Buttons */}
             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 text-xs text-left space-y-2.5">
+              
+              {/* Order Reference with Copy */}
               <div className="flex items-center justify-between border-b border-gray-200 pb-2">
                 <span className="text-gray-600 font-bold">Order Reference:</span>
-                <div className="text-right">
-                  <span className="text-[#4b0082] font-mono font-black text-sm block">{placedOrder.orderNumber || placedOrder.id}</span>
-                  {placedOrder.pushedToShopify && (
-                    <span className="text-[10px] text-emerald-700 font-extrabold bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">
-                      ✓ Created in Shopify Admin
-                    </span>
-                  )}
+                <div className="flex items-center gap-2">
+                  <span className="text-[#4b0082] font-mono font-black text-sm">
+                    {placedOrder.orderNumber || placedOrder.id}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(placedOrder.orderNumber || placedOrder.id, 'order-id')}
+                    className="text-[11px] text-gray-600 hover:text-[#4b0082] bg-white border border-gray-300 px-2 py-0.5 rounded flex items-center gap-1 transition"
+                  >
+                    {copiedKey === 'order-id' ? (
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3 h-3" />
+                    )}
+                    <span>{copiedKey === 'order-id' ? 'Copied' : 'Copy'}</span>
+                  </button>
                 </div>
               </div>
-              <div className="flex justify-between border-b border-gray-200 pb-2">
+
+              {/* Tracking ID with Copy */}
+              <div className="flex items-center justify-between border-b border-gray-200 pb-2">
                 <span className="text-gray-600">Tracking ID:</span>
-                <span className="font-mono font-bold text-gray-900">{placedOrder.trackingNumber}</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-gray-900">{placedOrder.trackingNumber}</span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(placedOrder.trackingNumber || '', 'tracking-id')}
+                    className="text-[11px] text-gray-600 hover:text-[#4b0082] bg-white border border-gray-300 px-2 py-0.5 rounded flex items-center gap-1 transition"
+                  >
+                    {copiedKey === 'tracking-id' ? (
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3 h-3" />
+                    )}
+                    <span>{copiedKey === 'tracking-id' ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
               </div>
+
               <div className="flex justify-between border-b border-gray-200 pb-2">
                 <span className="text-gray-600">Payment Mode:</span>
                 <span className="font-bold text-gray-900">{placedOrder.paymentMethod}</span>
@@ -643,7 +774,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
               )}
 
-              {/* Itemized Cost Breakdown in Receipt */}
+              {/* Cost Breakdown */}
               <div className="bg-white p-2.5 rounded-xl border border-gray-200/80 space-y-1 text-[11px]">
                 <div className="flex justify-between text-gray-600">
                   <span>Items Subtotal:</span>
@@ -665,13 +796,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               <div className="flex justify-between pt-1">
                 <span className="text-gray-800 font-bold">
-                  {placedOrder.paymentMethod.includes('Prepaid') ? 'Total Amount Paid (Online):' : 'Total Amount Payable on Delivery:'}
+                  {placedOrder.paymentMethod.includes('Prepaid') ? 'Total Amount Paid:' : 'Total Amount Payable on Delivery:'}
                 </span>
                 <span className="font-black text-[#4b0082] text-sm">₹{placedOrder.finalAmount.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-[11px] text-gray-500">
                 <span>Expected Delivery:</span>
-                <span className="font-bold text-emerald-800">{placedOrder.estimatedDelivery}</span>
+                <strong className="text-emerald-800">{placedOrder.estimatedDelivery}</strong>
+              </div>
+            </div>
+
+            {/* Email Confirmation Sent Banner */}
+            <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 text-xs text-[#4b0082] flex items-center justify-between text-left">
+              <div className="flex items-center gap-2">
+                <Mail className="w-5 h-5 text-[#4b0082] shrink-0" />
+                <div>
+                  <span className="font-bold block">Order confirmation sent to {placedOrder.customer.email}</span>
+                  <span className="text-[11px] text-gray-600">
+                    A detailed invoice has been dispatched to your inbox.
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -680,30 +824,36 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
-                  <span className="font-bold block">WhatsApp Order Updates Sent!</span>
+                  <span className="font-bold block">WhatsApp Order Updates Active</span>
                   <span className="text-[11px] text-emerald-700">
-                    Live tracking link sent to +91 {placedOrder.customer.phone}
+                    Live courier tracking link sent to +91 {placedOrder.customer.phone}
                   </span>
                 </div>
               </div>
             </div>
 
+            {/* Actions: View My Orders & Back to Store */}
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              {onViewMyOrders && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onViewMyOrders();
+                  }}
+                  className="w-full sm:w-1/2 py-3 bg-[#4b0082] hover:bg-[#3a0066] text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 border border-[#c9a84c]"
+                >
+                  <Package className="w-4 h-4 text-[#c9a84c]" />
+                  <span>View My Orders</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5"
+                className={`w-full ${onViewMyOrders ? 'sm:w-1/2' : ''} py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5`}
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Store</span>
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full sm:w-1/2 py-3 bg-[#4b0082] text-white font-bold text-xs rounded-xl shadow hover:bg-[#3a0066] transition flex items-center justify-center gap-1.5"
-              >
                 <span>Continue Shopping</span>
-                <ArrowRight className="w-4 h-4 text-[#c9a84c]" />
               </button>
             </div>
           </div>
@@ -713,4 +863,3 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     </div>
   );
 };
-

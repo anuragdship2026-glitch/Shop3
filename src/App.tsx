@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Product, CartItem, Order } from './types';
 import { PRODUCTS } from './data/products';
 import { AnnouncementBar } from './components/AnnouncementBar';
@@ -11,6 +11,8 @@ import { ProductDetailModal } from './components/ProductDetailModal';
 import { SizeGuideModal } from './components/SizeGuideModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
+import { AuthModal } from './components/AuthModal';
+import { MyOrders } from './components/MyOrders';
 import { OrderTrackingModal } from './components/OrderTrackingModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { WhyUsSection } from './components/WhyUsSection';
@@ -32,12 +34,60 @@ export default function App() {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [isMyOrdersOpen, setIsMyOrdersOpen] = useState<boolean>(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState<boolean>(false);
   const [isPoliciesOpen, setIsPoliciesOpen] = useState<boolean>(false);
+
+  // Authentication state
+  const [currentUser, setCurrentUser] = useState<any | null>(null);
 
   // Cart state
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null);
+
+  // Check stored customer session on mount
+  useEffect(() => {
+    try {
+      const storedCust = localStorage.getItem('indigo_customer');
+      if (storedCust) {
+        setCurrentUser(JSON.parse(storedCust));
+      }
+    } catch (e) {}
+
+    const token = localStorage.getItem('indigo_session');
+    if (token) {
+      fetch('/api/auth/session', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.customer) {
+            setCurrentUser(data.customer);
+            localStorage.setItem('indigo_customer', JSON.stringify(data.customer));
+          } else {
+            localStorage.removeItem('indigo_session');
+            localStorage.removeItem('indigo_customer');
+            setCurrentUser(null);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('indigo_session');
+    if (token) {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => {});
+    }
+    localStorage.removeItem('indigo_session');
+    localStorage.removeItem('indigo_customer');
+    setCurrentUser(null);
+    triggerNotification('Signed out successfully.');
+  };
 
   // Filter products based on category and search
   const filteredProducts = useMemo(() => {
@@ -65,7 +115,7 @@ export default function App() {
   };
 
   // Support direct product URLs (e.g. ?product=product-1 or #product-1)
-  React.useEffect(() => {
+  useEffect(() => {
     const parseProductFromUrl = () => {
       const searchParams = new URLSearchParams(window.location.search);
       let prodId = searchParams.get('product');
@@ -223,7 +273,14 @@ export default function App() {
 
   const handleOrderSuccess = (order: Order) => {
     setCartItems([]);
-    triggerNotification(`Order ${order.id} placed successfully!`);
+    triggerNotification(`Order ${order.orderNumber || order.id} placed successfully!`);
+    // Sync current user state
+    try {
+      const storedCust = localStorage.getItem('indigo_customer');
+      if (storedCust) {
+        setCurrentUser(JSON.parse(storedCust));
+      }
+    } catch (e) {}
   };
 
   const cartTotalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -280,6 +337,10 @@ export default function App() {
         onOpenCart={() => setIsCartOpen(true)}
         onOpenTracking={() => setIsTrackingOpen(true)}
         onOpenPolicies={() => setIsPoliciesOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenMyOrders={() => setIsMyOrdersOpen(true)}
+        currentUser={currentUser}
+        onLogout={handleLogout}
         selectedCategory={selectedCategory}
         onSelectCategory={(cat) => handleNavigateView('products', cat)}
         searchQuery={searchQuery}
@@ -460,7 +521,7 @@ export default function App() {
             })}
           </div>
 
-          {/* Product Grid - Two Buttons per item: Add to Cart & Buy Now */}
+          {/* Product Grid */}
           {filteredProducts.length === 0 ? (
             <div className="bg-white p-12 rounded-3xl text-center space-y-3 shadow-sm border border-gray-200 my-8">
               <p className="text-sm font-bold text-gray-700">
@@ -545,6 +606,26 @@ export default function App() {
         onClose={() => setIsCheckoutOpen(false)}
         cartItems={cartItems}
         onOrderSuccess={handleOrderSuccess}
+        onViewMyOrders={() => {
+          setIsCheckoutOpen(false);
+          setIsMyOrdersOpen(true);
+        }}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(customer, token) => {
+          setCurrentUser(customer);
+          triggerNotification(`Welcome back, ${customer?.name || 'VIP'}!`);
+        }}
+      />
+
+      <MyOrders
+        isOpen={isMyOrdersOpen}
+        onClose={() => setIsMyOrdersOpen(false)}
+        onStartShopping={() => handleNavigateView('products')}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       <OrderTrackingModal

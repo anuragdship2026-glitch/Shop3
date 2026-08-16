@@ -1,5 +1,10 @@
 import express from 'express';
 import { handleCreateOrder, orderHistory } from './create-order';
+import { handleSendOtp } from './auth/send-otp';
+import { handleVerifyOtp } from './auth/verify-otp';
+import { handleSession } from './auth/session';
+import { handleLogout } from './auth/logout';
+import { handleMyOrders } from './orders/my-orders';
 
 const app = express();
 
@@ -9,25 +14,40 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Health / Status Check Endpoint
 app.get('/api/health', (req, res) => {
-  const rawDomain = (process.env.SHOPIFY_STORE_DOMAIN || '').trim();
+  const rawDomain = (process.env.SHOPIFY_STORE_DOMAIN || 'indigoandco.myshopify.com').trim();
   const cleanDomain = rawDomain.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
   const accessToken = (process.env.SHOPIFY_ADMIN_ACCESS_TOKEN || '').trim();
+  const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+  const resendKey = (process.env.RESEND_API_KEY || '').trim();
+  const fast2smsKey = (process.env.FAST2SMS_API_KEY || '').trim();
 
-  const isShopifyConfigured = Boolean(cleanDomain && accessToken);
   res.json({
     status: 'ok',
-    shopifyConnected: isShopifyConfigured,
-    storeDomain: cleanDomain || 'Not Configured (Using Local Backend Mode)',
-    razorpayConfigured: Boolean(process.env.RAZORPAY_KEY_ID || 'rzp_test_TQMuUQaF5RTDps')
+    storeDomain: cleanDomain,
+    shopifyConnected: Boolean(accessToken),
+    supabaseConnected: Boolean(supabaseUrl),
+    resendConfigured: Boolean(resendKey),
+    fast2smsConfigured: Boolean(fast2smsKey),
+    razorpayConfigured: Boolean(process.env.VITE_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID)
   });
 });
 
-// Get recent orders endpoint
+// Authentication Endpoints
+app.post('/api/auth/send-otp', handleSendOtp);
+app.post('/api/auth/verify-otp', handleVerifyOtp);
+app.get('/api/auth/session', handleSession);
+app.post('/api/auth/session', handleSession);
+app.post('/api/auth/logout', handleLogout);
+app.get('/api/auth/logout', handleLogout);
+
+// Orders Endpoints
+app.get('/api/orders/my-orders', handleMyOrders);
+app.post('/api/orders/my-orders', handleMyOrders);
+app.get('/api/my-orders', handleMyOrders);
+app.post('/api/my-orders', handleMyOrders);
 app.get('/api/orders', (req, res) => {
   res.json({ success: true, count: orderHistory.length, orders: orderHistory });
 });
-
-// Create Order Endpoints (Serves both /api/create-order and /api/orders/create)
 app.post('/api/create-order', handleCreateOrder);
 app.post('/api/orders/create', handleCreateOrder);
 
