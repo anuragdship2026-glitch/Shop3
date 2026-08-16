@@ -6,10 +6,26 @@ import {
 } from '../lib/supabase';
 
 export async function handleMyOrders(req: Request | any, res: Response | any) {
+  if (res?.setHeader) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   console.log('[API /api/orders/my-orders] Request Method:', req.method);
   try {
+    let body = req.body || {};
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {}
+    }
+
     const authHeader = req.headers?.authorization || req.headers?.Authorization || '';
-    const bodyToken = req.body?.token || req.query?.token;
+    const bodyToken = body?.token || req.query?.token;
     const rawToken = authHeader ? (authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader) : bodyToken;
 
     if (!rawToken) {

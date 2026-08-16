@@ -12,13 +12,28 @@ import {
 export const orderHistory: any[] = inMemoryOrders;
 
 export async function handleCreateOrder(req: Request | any, res: Response | any) {
+  if (res?.setHeader) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  let body = req.body || {};
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {}
+  }
+
   console.log('====== [API /api/create-order] CALLED ======');
   console.log('Timestamp:', new Date().toISOString());
   console.log('Request Method:', req.method);
-  console.log('Request Body:', JSON.stringify(req.body, null, 2));
+  console.log('Request Body:', JSON.stringify(body, null, 2));
 
   try {
-    const body = req.body || {};
     const cust = body.customer || {};
 
     // Extract customer details supporting both flat and nested structures

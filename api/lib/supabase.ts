@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
+import { Resend } from 'resend';
 
 // In-memory fallbacks in case Supabase or 3rd party credentials are not yet set
 export const inMemoryOtpStore: Array<{
@@ -100,6 +101,22 @@ export function verifyJwtToken(token: string): any {
   }
 }
 
+let resendClient: Resend | null = null;
+
+export function getResend(): Resend | null {
+  if (resendClient) return resendClient;
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (key) {
+    try {
+      resendClient = new Resend(key);
+      return resendClient;
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
 /**
  * Resend API Email Sender helper
  */
@@ -119,32 +136,24 @@ export async function sendResendEmail({
   }
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${resendApiKey}`
-      },
-      body: JSON.stringify({
-        from: 'Indigo & Co. <onboarding@resend.dev>',
-        to: [to],
-        subject,
-        html
-      })
+    const resend = getResend() || new Resend(resendApiKey);
+    const result = await resend.emails.send({
+      from: 'Indigo & Co. <onboarding@resend.dev>',
+      to: [to],
+      subject,
+      html
     });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('[Resend Email] Failed to send email:', errorText);
-      return { success: false, error: errorText };
+    if (result.error) {
+      console.error('[Resend Email] Failed to send email:', result.error);
+      return { success: false, error: result.error.message };
     }
 
-    const data = await res.json();
-    console.log('[Resend Email] Email sent successfully to', to, data);
-    return { success: true, data };
+    console.log('[Resend Email] Email sent successfully to', to, result.data);
+    return { success: true, data: result.data };
   } catch (err: any) {
-    console.error('[Resend Email] Fetch error:', err);
-    return { success: false, error: err?.message || 'Network error' };
+    console.error('[Resend Email] SDK error:', err);
+    return { success: false, error: err?.message || 'Email delivery error' };
   }
 }
 

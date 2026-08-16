@@ -8,9 +8,24 @@ import {
 } from '../lib/supabase';
 
 export async function handleSendOtp(req: Request | any, res: Response | any) {
-  console.log('[API /api/auth/send-otp] Request Body:', req.body);
+  if (res?.setHeader) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  let body = req.body || {};
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {}
+  }
+
+  console.log('[API /api/auth/send-otp] Request Body:', body);
   try {
-    const body = req.body || {};
     const identifier = (body.identifier || body.email || body.phone || '').toString().trim();
     const method = (body.method || (identifier.includes('@') ? 'email' : 'phone')).toLowerCase();
 
