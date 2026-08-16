@@ -3,7 +3,7 @@ import {
   getSupabase,
   verifyJwtToken,
   inMemoryOrders
-} from '../lib/supabase';
+} from '../lib/supabase.js';
 
 export async function handleMyOrders(req: Request | any, res: Response | any) {
   if (res?.setHeader) {

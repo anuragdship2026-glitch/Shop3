@@ -5,7 +5,7 @@ import {
   sendResendEmail,
   sendFast2Sms,
   getOtpEmailHtml
-} from '../lib/supabase';
+} from '../lib/supabase.js';
 
 export async function handleSendOtp(req: Request | any, res: Response | any) {
   if (res?.setHeader) {

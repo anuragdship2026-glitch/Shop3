@@ -3,7 +3,7 @@ import {
   getSupabase,
   verifyJwtToken,
   inMemoryCustomers
-} from '../lib/supabase';
+} from '../lib/supabase.js';
 
 export async function handleSession(req: Request | any, res: Response | any) {
   if (res?.setHeader) {

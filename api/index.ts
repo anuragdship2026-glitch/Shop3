@@ -1,10 +1,10 @@
 import express from 'express';
-import { handleCreateOrder, orderHistory } from './create-order';
-import { handleSendOtp } from './auth/send-otp';
-import { handleVerifyOtp } from './auth/verify-otp';
-import { handleSession } from './auth/session';
-import { handleLogout } from './auth/logout';
-import { handleMyOrders } from './orders/my-orders';
+import { handleCreateOrder, orderHistory } from './create-order.js';
+import { handleSendOtp } from './auth/send-otp.js';
+import { handleVerifyOtp } from './auth/verify-otp.js';
+import { handleSession } from './auth/session.js';
+import { handleLogout } from './auth/logout.js';
+import { handleMyOrders } from './orders/my-orders.js';
 
 const app = express();
 

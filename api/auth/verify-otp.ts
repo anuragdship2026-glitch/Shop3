@@ -4,7 +4,7 @@ import {
   inMemoryOtpStore,
   inMemoryCustomers,
   generateJwtToken
-} from '../lib/supabase';
+} from '../lib/supabase.js';
 
 export async function handleVerifyOtp(req: Request | any, res: Response | any) {
   if (res?.setHeader) {

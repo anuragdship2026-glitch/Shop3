@@ -6,7 +6,7 @@ import {
   getOrderConfirmationEmailHtml,
   inMemoryCustomers,
   inMemoryOrders
-} from './lib/supabase';
+} from './lib/supabase.js';
 
 // In-memory order log fallback for tracking & dashboard
 export const orderHistory: any[] = inMemoryOrders;
