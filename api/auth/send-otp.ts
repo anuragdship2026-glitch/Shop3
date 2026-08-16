@@ -8,6 +8,12 @@ import {
 } from '../lib/supabase.js';
 
 export async function handleSendOtp(req: Request | any, res: Response | any) {
+  console.log('ENV CHECK:', {
+    hasResend: !!process.env.RESEND_API_KEY,
+    hasFast2SMS: !!process.env.FAST2SMS_API_KEY,
+    hasSupabase: !!process.env.SUPABASE_URL
+  });
+
   if (res?.setHeader) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

@@ -49,25 +49,30 @@ export async function handleMyOrders(req: Request | any, res: Response | any) {
 
     console.log('[API /api/orders/my-orders] Fetching orders for:', { customerId, customerEmail, customerPhone });
 
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customerId || '');
     const supabase = getSupabase();
     let orders: any[] = [];
 
     if (supabase) {
-      // Query Supabase orders table
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('customer_id', customerId)
-        .order('created_at', { ascending: false });
+      if (isUuid) {
+        // Query Supabase orders table by customer_id UUID
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('customer_id', customerId)
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('[Supabase Fetch Orders Error]:', error);
+        if (error) {
+          console.error('[Supabase Fetch Orders Error]:', error);
+        }
+
+        if (data && data.length > 0) {
+          orders = data;
+        }
       }
 
-      if (data && data.length > 0) {
-        orders = data;
-      } else {
-        // Also check if any orders were saved with matching email or phone in metadata
+      if (!orders || orders.length === 0) {
+        // Also check if any orders match by customer email or phone
         const { data: allOrders } = await supabase
           .from('orders')
           .select('*')
@@ -79,7 +84,7 @@ export async function handleMyOrders(req: Request | any, res: Response | any) {
             const addr = ord.shipping_address || {};
             const emailMatch = customerEmail && (addr.email?.toLowerCase() === customerEmail || ord.customer_email?.toLowerCase() === customerEmail);
             const phoneMatch = customerPhone && (addr.phone?.includes(customerPhone) || ord.customer_phone?.includes(customerPhone));
-            return ord.customer_id === customerId || emailMatch || phoneMatch;
+            return (isUuid && ord.customer_id === customerId) || emailMatch || phoneMatch;
           });
         }
       }

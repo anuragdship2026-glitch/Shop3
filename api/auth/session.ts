@@ -43,22 +43,33 @@ export async function handleSession(req: Request | any, res: Response | any) {
     }
 
     const customerId = decoded.id;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customerId || '');
+    const cleanEmail = decoded.email ? decoded.email.toLowerCase().trim() : null;
+    const cleanPhone = decoded.phone ? decoded.phone.replace(/\D/g, '') : null;
+
     const supabase = getSupabase();
     let customer = null;
 
     if (supabase) {
-      const { data, error } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('id', customerId)
-        .limit(1);
-
-      if (error) {
-        console.error('[Supabase Session Error]:', error);
+      let query = supabase.from('customers').select('*');
+      if (isUuid) {
+        query = query.eq('id', customerId);
+      } else if (cleanEmail) {
+        query = query.eq('email', cleanEmail);
+      } else if (cleanPhone) {
+        query = query.eq('phone', cleanPhone);
       }
 
-      if (data && data.length > 0) {
-        customer = data[0];
+      if (isUuid || cleanEmail || cleanPhone) {
+        const { data, error } = await query.limit(1);
+
+        if (error) {
+          console.error('[Supabase Session Error]:', error);
+        }
+
+        if (data && data.length > 0) {
+          customer = data[0];
+        }
       }
     }
 

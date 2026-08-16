@@ -121,7 +121,8 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
         const { data: createdCust, error: custErr } = await supabase
           .from('customers')
           .insert([newCust])
-          .select('*');
+          .select()
+          .single();
 
         if (custErr) {
           console.error('[Supabase Customer Creation Error]:', custErr);
@@ -129,8 +130,8 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
             id: `cust_${Date.now()}`,
             ...newCust
           };
-        } else if (createdCust && createdCust.length > 0) {
-          customerRecord = createdCust[0];
+        } else if (createdCust) {
+          customerRecord = createdCust;
         }
       }
     } else {
@@ -330,9 +331,41 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     const finalOrderNumber = shopifyOrderNumber || orderNumberStr;
     const finalOrderId = shopifyOrderId ? `SHOPIFY-${shopifyOrderId}` : localOrderId;
 
-    const dbOrderPayload = {
-      id: finalOrderId,
-      customer_id: customerId,
+    // Check if customer ID is a valid UUID
+    const isCustomerUuid = customerRecord?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customerRecord.id);
+
+    const supabaseOrderPayload = {
+      customer_id: isCustomerUuid ? customerRecord.id : null,
+      tracking_id: trackingNumber,
+      items: cartItems,
+      shipping_address: shippingAddressObj,
+      payment_method: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)',
+      final_amount: finalAmount || 0,
+      cod_fee: codFee || 0,
+      status: 'Confirmed',
+      estimated_delivery: estimatedDeliveryStr
+    };
+
+    let createdSupabaseOrder: any = null;
+
+    if (supabase) {
+      const { data: order, error: orderInsertErr } = await supabase
+        .from('orders')
+        .insert(supabaseOrderPayload)
+        .select()
+        .single();
+
+      if (orderInsertErr) {
+        console.error('[Supabase Order Insert Error]:', orderInsertErr);
+      } else {
+        createdSupabaseOrder = order;
+        console.log('[Supabase Order Insert] Saved order with auto-generated UUID:', order?.id);
+      }
+    }
+
+    const finalOrderObject = {
+      id: createdSupabaseOrder?.id || finalOrderId,
+      customer_id: customerRecord?.id || customerId,
       shopify_order_id: shopifyOrderId,
       order_number: finalOrderNumber,
       tracking_id: trackingNumber,
@@ -348,17 +381,8 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       estimated_delivery: estimatedDeliveryStr
     };
 
-    if (supabase) {
-      const { error: orderInsertErr } = await supabase.from('orders').insert([dbOrderPayload]);
-      if (orderInsertErr) {
-        console.error('[Supabase Order Insert Error]:', orderInsertErr);
-      } else {
-        console.log('[Supabase Order Insert] Saved order to Supabase orders table:', finalOrderId);
-      }
-    }
-
     // Always keep in local memory array as fallback
-    inMemoryOrders.unshift(dbOrderPayload);
+    inMemoryOrders.unshift(finalOrderObject);
 
     // 4. SEND ORDER CONFIRMATION EMAIL VIA RESEND
     if (cleanEmail) {
@@ -403,7 +427,7 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       pushedToShopify,
       token: sessionToken,
       customer: customerRecord,
-      order: dbOrderPayload,
+      order: finalOrderObject,
       message: 'Order created successfully!'
     });
   } catch (err: any) {

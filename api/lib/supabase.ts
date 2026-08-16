@@ -44,8 +44,15 @@ let supabaseAdmin: SupabaseClient | null = null;
 export function getSupabase(): SupabaseClient | null {
   if (supabaseAdmin) return supabaseAdmin;
 
-  const url = process.env.SUPABASE_URL?.trim();
-  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY)?.trim();
+  const url = (process.env.SUPABASE_URL || process.env.supabase_url || process.env.VITE_SUPABASE_URL)?.trim();
+  const key = (
+    process.env.SUPABASE_SERVICE_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.supabase_service_key ||
+    process.env.supabase_anon_key ||
+    process.env.VITE_SUPABASE_ANON_KEY
+  )?.trim();
 
   if (url && key) {
     try {
@@ -105,7 +112,7 @@ let resendClient: Resend | null = null;
 
 export function getResend(): Resend | null {
   if (resendClient) return resendClient;
-  const key = process.env.RESEND_API_KEY?.trim();
+  const key = (process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.resend_api_key)?.trim();
   if (key) {
     try {
       resendClient = new Resend(key);
@@ -129,7 +136,7 @@ export async function sendResendEmail({
   subject: string;
   html: string;
 }): Promise<{ success: boolean; data?: any; error?: string }> {
-  const resendApiKey = process.env.RESEND_API_KEY?.trim();
+  const resendApiKey = (process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.resend_api_key)?.trim();
   if (!resendApiKey) {
     console.warn('[Resend Email] RESEND_API_KEY is not set. Simulating email dispatch to:', to);
     return { success: true, data: { id: `sim_${Date.now()}` } };
@@ -167,7 +174,12 @@ export async function sendFast2Sms({
   phone: string;
   otp: string;
 }): Promise<{ success: boolean; data?: any; error?: string }> {
-  const apiKey = process.env.FAST2SMS_API_KEY?.trim();
+  const apiKey = (
+    process.env.FAST2SMS_API_KEY ||
+    process.env.FAST2SMS_KEY ||
+    process.env.fast2sms_api_key ||
+    process.env.FAST2SMS_AUTH
+  )?.trim();
   const cleanPhone = phone.replace(/\D/g, '').slice(-10);
 
   if (!apiKey) {
