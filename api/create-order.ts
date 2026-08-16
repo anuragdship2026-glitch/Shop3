@@ -169,7 +169,11 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     // 2. SHOPIFY ORDER CREATION
     const rawDomain = (process.env.SHOPIFY_STORE_DOMAIN || 'indigoandco.myshopify.com').trim();
     const shopDomain = rawDomain.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
-    const accessToken = (process.env.SHOPIFY_ADMIN_ACCESS_TOKEN || '').trim();
+    const accessToken = (
+      process.env.SHOPIFY_CLIENT_SECRET ||
+      process.env.SHOPIFY_ADMIN_ACCESS_TOKEN ||
+      ''
+    ).trim();
 
     const last10Digits = cleanPhoneDigits.slice(-10);
     const formattedPhone =
@@ -306,7 +310,7 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
         console.error('[Shopify API] Fetch failed:', shopErr);
       }
     } else {
-      console.warn('[Shopify API] SHOPIFY_ADMIN_ACCESS_TOKEN not configured.');
+      console.warn('[Shopify API] SHOPIFY_CLIENT_SECRET / SHOPIFY_ADMIN_ACCESS_TOKEN not configured.');
     }
 
     const shippingAddressObj = {
