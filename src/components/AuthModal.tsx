@@ -67,22 +67,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setSuccessMessage(null);
     const cleanId = identifier.trim();
 
-    if (!cleanId) {
-      setErrorMessage('Please enter your email address or mobile number.');
-      return;
-    }
-
-    if (selectedMethod === 'email' && !cleanId.includes('@')) {
-      setErrorMessage('Please enter a valid email address.');
-      return;
-    }
-
     if (selectedMethod === 'phone') {
-      const digits = cleanId.replace(/\D/g, '');
-      if (digits.length < 10) {
-        setErrorMessage('Please enter a valid 10-digit mobile number.');
-        return;
-      }
+      setErrorMessage('SMS OTP coming soon. Please use Email OTP.');
+      return;
+    }
+
+    if (!cleanId) {
+      setErrorMessage('Please enter your email address.');
+      return;
+    }
+
+    if (!cleanId.includes('@')) {
+      setErrorMessage('Please enter a valid email address. (SMS OTP coming soon)');
+      return;
     }
 
     setMethod(selectedMethod);

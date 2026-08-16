@@ -168,150 +168,105 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     });
 
     // 2. SHOPIFY ORDER CREATION
-    const rawDomain = (process.env.SHOPIFY_STORE_DOMAIN || 'indigoandco.myshopify.com').trim();
-    const shopDomain = rawDomain.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
-    const accessToken = (
-      process.env.SHOPIFY_CLIENT_SECRET ||
+    const SHOPIFY_DOMAIN = 'indigoandco.myshopify.com';
+    const SHOPIFY_TOKEN = (
       process.env.SHOPIFY_ADMIN_ACCESS_TOKEN ||
+      process.env.SHOPIFY_CLIENT_SECRET ||
       ''
     ).trim();
 
-    const last10Digits = cleanPhoneDigits.slice(-10);
-    const formattedPhone =
-      last10Digits.length === 10
-        ? `+91${last10Digits}`
-        : phone.startsWith('+')
-        ? phone
-        : `+91${cleanPhoneDigits}`;
-
-    const nameParts = customerName.trim().split(/\s+/);
-    const firstName = nameParts[0] || 'Customer';
-    const lastName = nameParts.slice(1).join(' ') || firstName;
-
-    // Line items for Shopify
-    const lineItems: any[] = cartItems.map((item: any) => {
-      const prod = item?.product || {};
-      let unitPrice = Number(prod.sellPrice || prod.price || 0);
-
-      if (item?.selectedBundleId && Array.isArray(prod.bundles)) {
-        const bundle = prod.bundles.find((b: any) => b.id === item.selectedBundleId);
-        if (bundle && item.quantity > 0) {
-          unitPrice = Math.round(Number(bundle.price) / Number(item.quantity));
-        }
-      }
-
-      const lineItemObj: any = {
-        title: prod.name || 'Indigo & Co. Product',
-        price: (unitPrice > 0 ? unitPrice : 899).toString(),
-        quantity: Number(item?.quantity) || 1
-      };
-
-      if (item?.selectedSize) {
-        lineItemObj.variant_title = `Size: ${item.selectedSize}`;
-      }
-
-      return lineItemObj;
-    });
-
-    if (isCOD && codFee > 0) {
-      lineItems.push({
-        title: 'COD Convenience Charge',
-        price: codFee.toString(),
-        quantity: 1
-      });
-    }
-
-    const shopifyOrderPayload: any = {
-      order: {
-        line_items: lineItems,
-        customer: {
-          first_name: firstName,
-          last_name: lastName,
-          email: cleanEmail || undefined,
-          phone: formattedPhone
-        },
-        shipping_address: {
-          first_name: firstName,
-          last_name: lastName,
-          address1: address || 'Main Delivery Address',
-          city: city || 'City',
-          province: state || 'State',
-          zip: pincode || '110001',
-          country: 'India',
-          phone: formattedPhone
-        },
-        billing_address: {
-          first_name: firstName,
-          last_name: lastName,
-          address1: address || 'Main Delivery Address',
-          city: city || 'City',
-          province: state || 'State',
-          zip: pincode || '110001',
-          country: 'India',
-          phone: formattedPhone
-        },
-        financial_status: isPrepaid ? 'paid' : 'pending',
-        payment_gateway_names: isPrepaid ? ['razorpay'] : ['cash_on_delivery'],
-        tags: 'website-order',
-        note: isPrepaid
-          ? `Prepaid Order via Razorpay. Payment ID: ${razorpayPaymentId || 'N/A'}. Phone: ${formattedPhone}`
-          : `Cash on Delivery Order. Collect ₹${finalAmount} on delivery. Phone: ${formattedPhone}`,
-        note_attributes: [
-          { name: 'PaymentMethod', value: isPrepaid ? 'Razorpay' : 'Cash on Delivery' },
-          { name: 'RazorpayPaymentID', value: razorpayPaymentId || 'N/A' },
-          { name: 'TrackingNumber', value: trackingNumber }
-        ]
-      }
-    };
-
-    if (isPrepaid && razorpayPaymentId) {
-      shopifyOrderPayload.order.transactions = [
-        {
-          kind: 'sale',
-          status: 'success',
-          amount: finalAmount.toString(),
-          gateway: 'razorpay',
-          authorization: razorpayPaymentId
-        }
-      ];
-    }
+    console.log('Shopify token length:', SHOPIFY_TOKEN?.length);
+    console.log('Shopify token start:', SHOPIFY_TOKEN?.substring(0, 10));
 
     let shopifyOrderId: string | null = null;
     let shopifyOrderNumber: string | null = null;
     let pushedToShopify = false;
 
-    if (accessToken) {
-      const shopifyUrl = `https://${shopDomain}/admin/api/2024-01/orders.json`;
-      console.log(`[Shopify API] Sending POST to ${shopifyUrl}...`);
-
+    if (SHOPIFY_TOKEN) {
       try {
-        const shopifyRes = await fetch(shopifyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Access-Token': accessToken
-          },
-          body: JSON.stringify(shopifyOrderPayload)
+        const shopifyLineItems: any[] = cartItems.map((item: any) => {
+          const prod = item?.product || {};
+          let unitPrice = Number(prod.sellPrice || prod.price || item?.price || 0);
+
+          if (item?.selectedBundleId && Array.isArray(prod.bundles)) {
+            const bundle = prod.bundles.find((b: any) => b.id === item.selectedBundleId);
+            if (bundle && item.quantity > 0) {
+              unitPrice = Math.round(Number(bundle.price) / Number(item.quantity));
+            }
+          }
+
+          return {
+            title: prod.name || item?.name || 'Indigo & Co. Product',
+            quantity: Number(item?.quantity) || 1,
+            price: (unitPrice > 0 ? unitPrice : 899).toString()
+          };
         });
 
-        console.log(`[Shopify API] Status: ${shopifyRes.status} ${shopifyRes.statusText}`);
+        if (isCOD && codFee > 0) {
+          shopifyLineItems.push({
+            title: 'COD Convenience Charge',
+            quantity: 1,
+            price: codFee.toString()
+          });
+        }
 
-        if (shopifyRes.ok) {
-          const shopifyData = await shopifyRes.json();
-          const createdShopifyOrder = shopifyData?.order || {};
+        const shopifyResponse = await fetch(
+          `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/orders.json`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Shopify-Access-Token': SHOPIFY_TOKEN || ''
+            },
+            body: JSON.stringify({
+              order: {
+                line_items: shopifyLineItems,
+                customer: {
+                  first_name: customerName.split(' ')[0] || 'Customer',
+                  last_name: customerName.split(' ').slice(1).join(' ') || '',
+                  email: cleanEmail || undefined,
+                  phone: phone
+                },
+                shipping_address: {
+                  first_name: customerName.split(' ')[0] || 'Customer',
+                  last_name: customerName.split(' ').slice(1).join(' ') || '',
+                  address1: address || 'Main Delivery Address',
+                  city: city || 'City',
+                  province: state || 'State',
+                  zip: pincode || '110001',
+                  country_code: 'IN',
+                  phone: phone
+                },
+                financial_status: isCOD ? 'pending' : 'paid',
+                send_receipt: true,
+                send_fulfillment_receipt: true,
+                tags: 'website-order,indigo-co',
+                note: `Payment: ${paymentMethod}`
+              }
+            })
+          }
+        );
+
+        const shopifyData = await shopifyResponse.json();
+        console.log('Shopify full response:', JSON.stringify(shopifyData));
+        console.log('Shopify status:', shopifyResponse.status);
+
+        if (shopifyResponse.ok && shopifyData?.order) {
+          const createdShopifyOrder = shopifyData.order;
           shopifyOrderId = createdShopifyOrder.id ? createdShopifyOrder.id.toString() : null;
-          shopifyOrderNumber = createdShopifyOrder.name || (createdShopifyOrder.order_number ? `#${createdShopifyOrder.order_number}` : null);
+          shopifyOrderNumber =
+            createdShopifyOrder.name ||
+            (createdShopifyOrder.order_number ? `#${createdShopifyOrder.order_number}` : null);
           pushedToShopify = true;
           console.log('[Shopify API] Order created in Shopify:', { shopifyOrderId, shopifyOrderNumber });
         } else {
-          const errText = await shopifyRes.text();
-          console.error('[Shopify API] Error creating order:', errText);
+          console.error('[Shopify API] Error creating order in Shopify:', shopifyData);
         }
       } catch (shopErr) {
         console.error('[Shopify API] Fetch failed:', shopErr);
       }
     } else {
-      console.warn('[Shopify API] SHOPIFY_CLIENT_SECRET / SHOPIFY_ADMIN_ACCESS_TOKEN not configured.');
+      console.warn('[Shopify API] SHOPIFY_ADMIN_ACCESS_TOKEN / SHOPIFY_CLIENT_SECRET not configured.');
     }
 
     const shippingAddressObj = {

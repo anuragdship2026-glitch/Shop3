@@ -38,26 +38,23 @@ export async function handleSendOtp(req: Request | any, res: Response | any) {
     if (!identifier) {
       return res.status(400).json({
         success: false,
-        message: 'Please enter a valid email address or 10-digit mobile number.'
-      });
-    }
-
-    // Basic format validation
-    if (method === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
-      return res.status(400).json({
-        success: false,
         message: 'Please enter a valid email address.'
       });
     }
 
-    if (method === 'phone') {
-      const digits = identifier.replace(/\D/g, '');
-      if (digits.length < 10) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please enter a valid 10-digit mobile number.'
-        });
-      }
+    if (method === 'phone' || !identifier.includes('@')) {
+      return res.status(400).json({
+        success: false,
+        message: 'SMS OTP coming soon. Please use Email OTP.'
+      });
+    }
+
+    // Email format validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email address.'
+      });
     }
 
     // Generate random 6-digit OTP
