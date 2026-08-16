@@ -153,10 +153,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          {/* LEFT COLUMN: Image Gallery */}
-          <div className="lg:col-span-6 space-y-4">
+          {/* LEFT COLUMN: Image Gallery & Rich Trust / Product Highlights */}
+          <div className="lg:col-span-6 space-y-5">
+            {/* Main Image Gallery */}
             <div className="relative aspect-square bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-sm group">
               <img
                 src={images[selectedImageIndex]}
@@ -166,7 +167,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               />
 
               {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+              <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none z-10">
                 <span className="bg-[#4b0082] text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                   {discountPct}% OFF
                 </span>
@@ -184,7 +185,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     onClick={() =>
                       setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))
                     }
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-md transition"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-md transition z-10"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
@@ -192,7 +193,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     onClick={() =>
                       setSelectedImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))
                     }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-md transition"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white text-gray-800 rounded-full flex items-center justify-center shadow-md transition z-10"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -202,7 +203,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
             {/* Thumbnail Strip */}
             {images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
                 {images.map((img, idx) => (
                   <button
                     key={idx}
@@ -241,22 +242,15 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               />
             </div>
 
-            {/* 3. BADGES OF BEST SELLER, INSTA COVER, ETC. */}
-            <CoolTagsRow />
-
-            {/* 4. PRICE SECTION & BUY SECTIONS */}
-            {/* Live Urgency Banner */}
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs bg-[#4b0082]/5 border border-[#4b0082]/15 p-2.5 rounded-xl font-bold text-[#4b0082]">
-              <div className="flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-orange-500 animate-pulse" />
-                <span>{viewersCount} people viewing right now</span>
-              </div>
-              <div className="flex items-center gap-1 text-red-600">
-                <Clock className="w-4 h-4" />
-                <span>Offer ends in: {formatTimer(timerSeconds)}</span>
+            {/* Single Best Seller Badge */}
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-gray-200 bg-white shadow-2xs text-gray-900 text-xs font-extrabold">
+                <span className="text-sm select-none">❤️</span>
+                <span>Best Seller</span>
               </div>
             </div>
 
+            {/* 3. PRICE SECTION & BUY SECTIONS */}
             {/* Pricing Box */}
             <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs space-y-2">
               <div className="flex items-baseline gap-3">
@@ -398,30 +392,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
             <PaymentIconsRow />
 
-            {/* PRODUCT-WISE HIGHLIGHT WIDGETS (e.g. One-Touch Reset, Long Battery Life, etc.) */}
-            {product.keyIcons && product.keyIcons.length > 0 && (
-              <div className="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-200/80 space-y-2">
-                <div className="text-[11px] font-black uppercase text-[#4b0082] tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
-                  <span>Product Highlights & Specs</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {product.keyIcons.map((ic, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white p-2.5 rounded-xl border border-purple-100 text-center flex flex-col items-center justify-center shadow-2xs hover:border-[#4b0082]/30 transition"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-[#4b0082]/10 text-[#4b0082] flex items-center justify-center mb-1.5 font-bold">
-                        <Sparkles className="w-4 h-4 text-[#4b0082]" />
-                      </div>
-                      <div className="text-xs font-black text-gray-900 leading-tight">{ic.title}</div>
-                      <div className="text-[10px] text-gray-500 font-medium mt-0.5 leading-tight">{ic.subtitle}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* 5. AT LAST: BADGES OF GENUINE, FREE DELIVERY, COD */}
             <div className="grid grid-cols-3 gap-3 pt-2">
               <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
@@ -451,7 +421,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               { id: 'OVERVIEW', label: 'Product Highlights' },
               { id: 'HOW_TO_USE', label: 'How to Use' },
               { id: 'SPECS', label: 'Specifications & Care' },
-              { id: 'REVIEWS', label: `Customer Reviews (${product.reviewsCount})` },
+              { id: 'REVIEWS', label: `Customer Reviews (${product.reviewCount || 128})` },
               { id: 'FAQS', label: 'FAQs' }
             ].map((tab) => (
               <button
@@ -526,7 +496,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             )}
 
             {activeTab === 'REVIEWS' && (
-              <ReviewsSection productId={product.id} rating={product.rating} totalReviews={product.reviewsCount} />
+              <ReviewsSection productId={product.id} rating={product.rating} totalReviews={product.reviewCount || 128} />
             )}
 
             {activeTab === 'FAQS' && (
@@ -563,14 +533,14 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 >
                   <div className="aspect-square rounded-xl overflow-hidden mb-2 bg-gray-50">
                     <img
-                      src={p.image}
+                      src={p.images?.[0] || ''}
                       alt={p.name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition"
                     />
                   </div>
                   <div className="text-xs font-bold text-gray-900 line-clamp-1">{p.name}</div>
-                  <div className="text-sm font-black text-[#4b0082] mt-1">₹{p.price}</div>
+                  <div className="text-sm font-black text-[#4b0082] mt-1">₹{p.sellPrice.toLocaleString('en-IN')}</div>
                 </div>
               ))}
             </div>
@@ -579,7 +549,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
         {/* Dedicated Customer Reviews Section above Footer */}
         <div className="mt-12 pt-6 border-t border-gray-200/80">
-          <ReviewsSection productId={product.id} rating={product.rating} totalReviews={product.reviewsCount} />
+          <ReviewsSection productId={product.id} rating={product.rating} totalReviews={product.reviewCount || 128} />
         </div>
       </div>
 

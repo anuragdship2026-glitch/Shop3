@@ -64,6 +64,10 @@ export interface Review {
 
 export interface Order {
   id: string;
+  orderNumber?: string;
+  shopifyOrderId?: string;
+  pushedToShopify?: boolean;
+  razorpayPaymentId?: string;
   items: CartItem[];
   customer: {
     name: string;
@@ -74,7 +78,7 @@ export interface Order {
     state: string;
     pincode: string;
   };
-  paymentMethod: 'COD' | 'Prepaid UPI/Razorpay';
+  paymentMethod: 'COD' | 'Prepaid UPI/Razorpay' | string;
   totalAmount: number;
   discount: number;
   codFee?: number;

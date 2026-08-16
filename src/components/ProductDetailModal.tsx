@@ -317,8 +317,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               />
             </div>
 
-            {/* Cool Pill Badges / Tags */}
-            <CoolTagsRow />
+            {/* Single Best Seller Badge */}
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl border border-gray-200 bg-white shadow-2xs text-gray-900 text-xs font-extrabold">
+                <span className="text-sm select-none">❤️</span>
+                <span>Best Seller</span>
+              </div>
+            </div>
 
             {/* Price Box */}
             <div className="flex items-baseline gap-3 bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs flex-wrap">
@@ -495,30 +500,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               )}
             </div>
 
-            {/* PRODUCT-WISE HIGHLIGHT WIDGETS (e.g. One-Touch Reset, Long Battery Life, etc.) */}
-            {product.keyIcons && product.keyIcons.length > 0 && (
-              <div className="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-200/80 space-y-2">
-                <div className="text-[11px] font-black uppercase text-[#4b0082] tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
-                  <span>Product Highlights & Specs</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {product.keyIcons.map((ic, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white p-2.5 rounded-xl border border-purple-100 text-center flex flex-col items-center justify-center shadow-2xs hover:border-[#4b0082]/30 transition"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-[#4b0082]/10 text-[#4b0082] flex items-center justify-center mb-1.5 font-bold">
-                        <Sparkles className="w-4 h-4 text-[#4b0082]" />
-                      </div>
-                      <div className="text-xs font-black text-gray-900 leading-tight">{ic.title}</div>
-                      <div className="text-[10px] text-gray-500 font-medium mt-0.5 leading-tight">{ic.subtitle}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* AT LAST: BADGES OF GENUINE, FREE DELIVERY, COD */}
             <div className="grid grid-cols-3 gap-3 pt-2">
               <div className="bg-white rounded-2xl p-3 text-center border border-gray-200 shadow-2xs">
@@ -585,7 +566,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   : 'text-gray-600 hover:bg-gray-200'
               }`}
             >
-              Verified Buyer Reviews ({product.reviewsCount})
+              Verified Buyer Reviews ({product.reviewCount || 128})
             </button>
             <button
               onClick={() => setActiveTab('FAQS')}

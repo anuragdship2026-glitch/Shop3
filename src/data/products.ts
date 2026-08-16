@@ -64,9 +64,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (Special Offer)',
-        price: 1899,
+        price: 2099,
         originalPrice: 4398,
-        savingsText: 'You save 57%',
+        savingsText: 'You save 52%',
         isPopular: true
       }
     ]
@@ -130,9 +130,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (Combo colors)',
-        price: 1599,
+        price: 1699,
         originalPrice: 3598,
-        savingsText: 'You save 55%',
+        savingsText: 'You save 53%',
         isPopular: true
       }
     ]
@@ -196,9 +196,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (For Couple / Office)',
-        price: 1199,
+        price: 1299,
         originalPrice: 2998,
-        savingsText: 'You save 60%',
+        savingsText: 'You save 57%',
         isPopular: true
       }
     ]
@@ -263,9 +263,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (For You & Partner)',
-        price: 1399,
+        price: 1499,
         originalPrice: 2998,
-        savingsText: 'You save 53%',
+        savingsText: 'You save 50%',
         isPopular: true
       }
     ]
@@ -322,11 +322,11 @@ export const PRODUCTS: Product[] = [
         savingsText: 'You save 50%'
       },
       {
-        id: 'pack-of-3',
-        name: 'Pack of 3 (1-Month Treatment)',
-        price: 1199,
-        originalPrice: 2997,
-        savingsText: 'You save 60%',
+        id: 'pack-of-2',
+        name: 'Pack of 2 (Double Glow Offer)',
+        price: 899,
+        originalPrice: 1998,
+        savingsText: 'You save 55%',
         isPopular: true
       }
     ]
@@ -390,9 +390,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (For Family/Gifting)',
-        price: 999,
+        price: 1099,
         originalPrice: 2598,
-        savingsText: 'You save 61%',
+        savingsText: 'You save 58%',
         isPopular: true
       }
     ]
@@ -456,9 +456,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (For Couple)',
-        price: 1599,
+        price: 1699,
         originalPrice: 3598,
-        savingsText: 'You save 55%',
+        savingsText: 'You save 53%',
         isPopular: true
       }
     ]
@@ -524,9 +524,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (Beige + Black Combo)',
-        price: 999,
+        price: 1099,
         originalPrice: 3198,
-        savingsText: 'You save 69%',
+        savingsText: 'You save 66%',
         isPopular: true
       }
     ]
@@ -592,9 +592,9 @@ export const PRODUCTS: Product[] = [
       {
         id: 'pack-of-2',
         name: 'Pack of 2 (Recommended)',
-        price: 999,
+        price: 1099,
         originalPrice: 2598,
-        savingsText: 'You save 62%',
+        savingsText: 'You save 58%',
         isPopular: true
       }
     ]
