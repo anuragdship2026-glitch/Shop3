@@ -167,106 +167,94 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       name: customerName
     });
 
-    // 2. SHOPIFY ORDER CREATION
-    const SHOPIFY_DOMAIN = 'indigoandco.myshopify.com';
-    const SHOPIFY_TOKEN = (
-      process.env.SHOPIFY_ADMIN_ACCESS_TOKEN ||
-      process.env.SHOPIFY_CLIENT_SECRET ||
-      ''
-    ).trim();
+    // 2. SHOPIFY STOREFRONT API CHECKOUT CREATION
+    const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
+    const SHOPIFY_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN || 'indigoandco.myshopify.com';
 
-    console.log('Shopify token length:', SHOPIFY_TOKEN?.length);
-    console.log('Shopify token start:', SHOPIFY_TOKEN?.substring(0, 10));
+    console.log('Using Storefront token:', STOREFRONT_TOKEN?.substring(0, 20));
 
-    let shopifyOrderId: string | null = null;
-    let shopifyOrderNumber: string | null = null;
+    let shopifyCheckoutId: string | null = null;
+    let shopifyCheckoutUrl: string | null = null;
     let pushedToShopify = false;
 
-    if (SHOPIFY_TOKEN) {
+    if (STOREFRONT_TOKEN) {
       try {
-        const shopifyLineItems: any[] = cartItems.map((item: any) => {
-          const prod = item?.product || {};
-          let unitPrice = Number(prod.sellPrice || prod.price || item?.price || 0);
-
-          if (item?.selectedBundleId && Array.isArray(prod.bundles)) {
-            const bundle = prod.bundles.find((b: any) => b.id === item.selectedBundleId);
-            if (bundle && item.quantity > 0) {
-              unitPrice = Math.round(Number(bundle.price) / Number(item.quantity));
-            }
-          }
-
-          return {
-            title: prod.name || item?.name || 'Indigo & Co. Product',
-            quantity: Number(item?.quantity) || 1,
-            price: (unitPrice > 0 ? unitPrice : 899).toString()
-          };
-        });
-
-        if (isCOD && codFee > 0) {
-          shopifyLineItems.push({
-            title: 'COD Convenience Charge',
-            quantity: 1,
-            price: codFee.toString()
-          });
-        }
-
-        const shopifyResponse = await fetch(
-          `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/orders.json`,
+        const storefrontResponse = await fetch(
+          `https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-Shopify-Access-Token': SHOPIFY_TOKEN || ''
+              'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN || ''
             },
             body: JSON.stringify({
-              order: {
-                line_items: shopifyLineItems,
-                customer: {
-                  first_name: customerName.split(' ')[0] || 'Customer',
-                  last_name: customerName.split(' ').slice(1).join(' ') || '',
-                  email: cleanEmail || undefined,
-                  phone: phone
-                },
-                shipping_address: {
-                  first_name: customerName.split(' ')[0] || 'Customer',
-                  last_name: customerName.split(' ').slice(1).join(' ') || '',
-                  address1: address || 'Main Delivery Address',
-                  city: city || 'City',
-                  province: state || 'State',
-                  zip: pincode || '110001',
-                  country_code: 'IN',
-                  phone: phone
-                },
-                financial_status: isCOD ? 'pending' : 'paid',
-                send_receipt: true,
-                send_fulfillment_receipt: true,
-                tags: 'website-order,indigo-co',
-                note: `Payment: ${paymentMethod}`
+              query: `
+                mutation checkoutCreate($input: CheckoutCreateInput!) {
+                  checkoutCreate(input: $input) {
+                    checkout {
+                      id
+                      webUrl
+                      orderStatusUrl
+                    }
+                    checkoutUserErrors {
+                      code
+                      field
+                      message
+                    }
+                  }
+                }
+              `,
+              variables: {
+                input: {
+                  email: email,
+                  shippingAddress: {
+                    firstName: customerName.split(' ')[0],
+                    lastName: customerName.split(' ')[1] || '',
+                    address1: address,
+                    city: city,
+                    province: state,
+                    zip: pincode,
+                    countryCode: 'IN',
+                    phone: phone
+                  },
+                  lineItems: cartItems.map((item: any) => ({
+                    variantId: `gid://shopify/ProductVariant/${item.product?.shopifyVariantId || item.shopifyVariantId || ''}`,
+                    quantity: item.quantity
+                  })),
+                  customAttributes: [
+                    { key: 'payment_method', value: paymentMethod },
+                    { key: 'razorpay_payment_id', value: razorpayPaymentId || '' },
+                    { key: 'source', value: 'indigoandco.in' }
+                  ]
+                }
               }
             })
           }
         );
 
-        const shopifyData = await shopifyResponse.json();
-        console.log('Shopify full response:', JSON.stringify(shopifyData));
-        console.log('Shopify status:', shopifyResponse.status);
+        const storefrontData = await storefrontResponse.json();
+        console.log('Storefront API status:', storefrontResponse.status);
+        console.log('Storefront API response:', JSON.stringify(storefrontData));
 
-        if (shopifyResponse.ok && shopifyData?.order) {
-          const createdShopifyOrder = shopifyData.order;
-          shopifyOrderId = createdShopifyOrder.id ? createdShopifyOrder.id.toString() : null;
-          shopifyOrderNumber =
-            createdShopifyOrder.name ||
-            (createdShopifyOrder.order_number ? `#${createdShopifyOrder.order_number}` : null);
+        const checkout = storefrontData.data?.checkoutCreate?.checkout;
+        const userErrors = storefrontData.data?.checkoutCreate?.checkoutUserErrors;
+
+        if (userErrors && userErrors.length > 0) {
+          console.error('Checkout errors:', JSON.stringify(userErrors));
+        }
+
+        shopifyCheckoutId = checkout?.id || null;
+        shopifyCheckoutUrl = checkout?.webUrl || null;
+
+        if (shopifyCheckoutId) {
           pushedToShopify = true;
-          console.log('[Shopify API] Order created in Shopify:', { shopifyOrderId, shopifyOrderNumber });
-        } else {
-          console.error('[Shopify API] Error creating order in Shopify:', shopifyData);
+          console.log('Shopify checkout created:', shopifyCheckoutId);
         }
       } catch (shopErr) {
-        console.error('[Shopify API] Fetch failed:', shopErr);
+        console.error('[Shopify Storefront API] Fetch failed:', shopErr);
       }
     } else {
-      console.warn('[Shopify API] SHOPIFY_ADMIN_ACCESS_TOKEN / SHOPIFY_CLIENT_SECRET not configured.');
+      console.warn('[Shopify Storefront API] SHOPIFY_STOREFRONT_TOKEN not configured.');
     }
 
     const shippingAddressObj = {
@@ -283,8 +271,8 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     const subtotal = (finalAmount || 0) - (codFee || 0);
 
     // 3. SAVE TO SUPABASE ORDERS TABLE
-    const finalOrderNumber = shopifyOrderNumber || orderNumberStr;
-    const finalOrderId = shopifyOrderId ? `SHOPIFY-${shopifyOrderId}` : localOrderId;
+    const finalOrderNumber = orderNumberStr;
+    const finalOrderId = shopifyCheckoutId ? `SHOPIFY-${shopifyCheckoutId.split('/').pop()}` : localOrderId;
 
     // Check if customer ID is a valid UUID
     const isCustomerUuid = customerRecord?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customerRecord.id);
@@ -321,7 +309,9 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     const finalOrderObject = {
       id: createdSupabaseOrder?.id || finalOrderId,
       customer_id: customerRecord?.id || customerId,
-      shopify_order_id: shopifyOrderId,
+      shopify_order_id: shopifyCheckoutId,
+      shopify_checkout_id: shopifyCheckoutId,
+      shopify_checkout_url: shopifyCheckoutUrl,
       order_number: finalOrderNumber,
       tracking_id: trackingNumber,
       items: cartItems,
@@ -375,7 +365,9 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       success: true,
       orderId: finalOrderId,
       orderNumber: finalOrderNumber,
-      shopifyOrderId,
+      shopifyOrderId: shopifyCheckoutId,
+      shopifyCheckoutId,
+      shopifyCheckoutUrl,
       trackingId: trackingNumber,
       trackingNumber,
       estimatedDelivery: estimatedDeliveryStr,
