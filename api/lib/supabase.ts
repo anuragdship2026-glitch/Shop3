@@ -24,7 +24,7 @@ export const inMemoryCustomers: Array<{
 export const inMemoryOrders: Array<{
   id: string;
   customer_id: string;
-  shopify_order_id: string | null;
+  shopify_order_id?: string | null;
   order_number: string;
   tracking_id: string;
   items: any;

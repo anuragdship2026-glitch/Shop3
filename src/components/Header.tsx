@@ -31,8 +31,8 @@ interface HeaderProps {
   onSelectCategory: (cat: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  currentView: 'home' | 'products';
-  onNavigateView: (view: 'home' | 'products', category?: string) => void;
+  currentView: 'home' | 'products' | 'product_detail';
+  onNavigateView: (view: 'home' | 'products' | 'product_detail', category?: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({

@@ -39,6 +39,7 @@ export interface Product {
     isPopular?: boolean;
   }[];
   hasSizeGuide?: boolean;
+  shopifyHandle?: string;
 }
 
 export interface CartItem {

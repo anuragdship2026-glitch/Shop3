@@ -318,7 +318,14 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f2eded] text-[#2c2c2c] antialiased">
+    <shopify-store
+      store-domain="indigoandco.myshopify.com"
+      public-access-token={(import.meta as any).env?.VITE_SHOPIFY_STOREFRONT_TOKEN || ''}
+      country="IN"
+      language="en"
+    >
+      <shopify-cart id="main-cart"></shopify-cart>
+      <div className="min-h-screen flex flex-col bg-[#f2eded] text-[#2c2c2c] antialiased">
       
       {/* Toast Notification */}
       {notificationMsg && (
@@ -642,5 +649,6 @@ export default function App() {
       <LivePurchaseToast onSelectProduct={handleOpenProduct} />
 
     </div>
+    </shopify-store>
   );
 }

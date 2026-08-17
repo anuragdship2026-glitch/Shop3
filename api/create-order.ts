@@ -167,79 +167,6 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       name: customerName
     });
 
-    // 2. SHOPIFY ADMIN REST API ORDER CREATION
-    const SHOPIFY_TOKEN = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
-    const SHOPIFY_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN || 'indigoandco.myshopify.com';
-
-    console.log('Shopify token exists:', !!SHOPIFY_TOKEN);
-    console.log('Shopify token prefix:', SHOPIFY_TOKEN?.substring(0, 10));
-
-    let shopifyOrderId: string | null = null;
-    let shopifyOrderNumber: string | null = null;
-    let pushedToShopify = false;
-
-    try {
-      const shopifyResponse = await fetch(
-        `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/orders.json`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Shopify-Access-Token': SHOPIFY_TOKEN || ''
-          },
-          body: JSON.stringify({
-            order: {
-              line_items: cartItems.map((item: any) => ({
-                title: item.product?.name || item.product?.title || 'Product',
-                quantity: item.quantity || 1,
-                price: String(item.product?.sellPrice || item.product?.price || 0)
-              })),
-              customer: {
-                first_name: customerName?.split(' ')[0] || customerName,
-                last_name: customerName?.split(' ').slice(1).join(' ') || '',
-                email: email,
-                phone: phone
-              },
-              shipping_address: {
-                first_name: customerName?.split(' ')[0] || customerName,
-                last_name: customerName?.split(' ').slice(1).join(' ') || '',
-                address1: address,
-                city: city,
-                province: state,
-                zip: pincode,
-                country_code: 'IN',
-                phone: phone
-              },
-              financial_status: paymentMethod === 'COD' ? 'pending' : 'paid',
-              tags: 'website-order,indigoandco',
-              note: `Payment: ${paymentMethod} | Source: indigoandco.in`,
-              send_receipt: true
-            }
-          })
-        }
-      );
-
-      const shopifyData = await shopifyResponse.json();
-      console.log('Shopify response status:', shopifyResponse.status);
-      console.log('Shopify response:', JSON.stringify(shopifyData));
-
-      if (!shopifyResponse.ok) {
-        console.error('Shopify error:', JSON.stringify(shopifyData));
-      }
-
-      const shopifyOrder = shopifyData.order;
-      shopifyOrderId = shopifyOrder?.id?.toString() || null;
-      shopifyOrderNumber = shopifyOrder?.order_number?.toString() || null;
-
-      if (shopifyOrderId) {
-        pushedToShopify = true;
-      }
-
-      console.log('Shopify order created:', shopifyOrderId, shopifyOrderNumber);
-    } catch (shopErr) {
-      console.error('[Shopify Admin API] Order create fetch failed:', shopErr);
-    }
-
     const shippingAddressObj = {
       name: customerName,
       phone,
@@ -253,9 +180,9 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
 
     const subtotal = (finalAmount || 0) - (codFee || 0);
 
-    // 3. SAVE TO SUPABASE ORDERS TABLE
-    const finalOrderNumber = shopifyOrderNumber ? `#${shopifyOrderNumber}` : orderNumberStr;
-    const finalOrderId = shopifyOrderId ? `SHOPIFY-${shopifyOrderId}` : localOrderId;
+    // 2. SAVE TO SUPABASE ORDERS TABLE
+    const finalOrderNumber = orderNumberStr;
+    const finalOrderId = localOrderId;
 
     // Check if customer ID is a valid UUID
     const isCustomerUuid = customerRecord?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customerRecord.id);
@@ -265,7 +192,7 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       tracking_id: trackingNumber,
       items: cartItems,
       shipping_address: shippingAddressObj,
-      payment_method: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)',
+      payment_method: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid',
       final_amount: finalAmount || 0,
       cod_fee: codFee || 0,
       status: 'Confirmed',
@@ -292,13 +219,11 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     const finalOrderObject = {
       id: createdSupabaseOrder?.id || finalOrderId,
       customer_id: customerRecord?.id || customerId,
-      shopify_order_id: shopifyOrderId,
-      shopify_order_number: shopifyOrderNumber,
       order_number: finalOrderNumber,
       tracking_id: trackingNumber,
       items: cartItems,
       shipping_address: shippingAddressObj,
-      payment_method: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)',
+      payment_method: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid',
       subtotal,
       cod_fee: codFee || 0,
       final_amount: finalAmount || 0,
@@ -311,7 +236,7 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
     // Always keep in local memory array as fallback
     inMemoryOrders.unshift(finalOrderObject);
 
-    // 4. SEND ORDER CONFIRMATION EMAIL VIA RESEND
+    // 3. SEND ORDER CONFIRMATION EMAIL VIA RESEND
     if (cleanEmail) {
       const confirmationEmailHtml = getOrderConfirmationEmailHtml({
         orderNumber: finalOrderNumber,
@@ -321,7 +246,7 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
         subtotal,
         codFee,
         finalAmount,
-        paymentMethod: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid (Razorpay / UPI)',
+        paymentMethod: isCOD ? 'Cash on Delivery (COD)' : 'Prepaid',
         estimatedDelivery: estimatedDeliveryStr,
         shippingAddress: shippingAddressObj
       });
@@ -339,20 +264,16 @@ export async function handleCreateOrder(req: Request | any, res: Response | any)
       orderId: finalOrderId,
       orderNumber: finalOrderNumber,
       trackingNumber,
-      customerId,
-      pushedToShopify
+      customerId
     });
 
     return res.status(200).json({
       success: true,
       orderId: finalOrderId,
       orderNumber: finalOrderNumber,
-      shopifyOrderId,
-      shopifyOrderNumber,
       trackingId: trackingNumber,
       trackingNumber,
       estimatedDelivery: estimatedDeliveryStr,
-      pushedToShopify,
       token: sessionToken,
       customer: customerRecord,
       order: finalOrderObject,

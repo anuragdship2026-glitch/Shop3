@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Product, CartItem } from '../types';
-import { REVIEWS } from '../data/products';
+import { REVIEWS, SHOPIFY_PRODUCT_HANDLES } from '../data/products';
 import { PaymentIconsRow } from './PaymentLogos';
 import { BenefitCard, CustomerProofRow, CoolTagsRow } from './CustomerSocialProof';
 import {
@@ -148,6 +148,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     selectedBundleId: selectedBundleId,
     selectedSize: product.hasSizeGuide ? selectedSize : undefined
   });
+
+  const shopifyHandle = product.shopifyHandle || SHOPIFY_PRODUCT_HANDLES[product.id] || product.id;
+
+  const handleAddToCartClick = (e?: any) => {
+    const storeElement = document.querySelector('shopify-store') as any;
+    if (storeElement) {
+      storeElement.addToCart(e);
+    }
+    onAddToCart(constructCartItem());
+  };
 
   const nextImage = () => {
     setSelectedImageIndex((prev) => (prev + 1) % product.images.length);
@@ -446,7 +456,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Two Main Action Buttons Only */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <button
-                onClick={() => onAddToCart(constructCartItem())}
+                onClick={(e) => handleAddToCartClick(e)}
                 className="w-full py-3.5 bg-[#f2eded] hover:bg-[#e8d5f5] text-[#4b0082] font-extrabold text-xs sm:text-sm rounded-2xl border-2 border-[#4b0082]/30 shadow-sm transition flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4 text-[#4b0082]" />
@@ -664,7 +674,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       ))}
                     </div>
                     <span className="font-bold text-sm text-[#111827]">{product.rating}</span>
-                    <span className="text-gray-400 font-normal">({product.reviewsCount || 1108} reviews)</span>
+                    <span className="text-gray-400 font-normal">({product.reviewCount || 1108} reviews)</span>
                   </div>
                 </div>
                 <span className="bg-emerald-50 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
@@ -772,7 +782,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Two Action Buttons */}
             <div className="flex items-center gap-2">
               <button
-                onClick={() => onAddToCart(constructCartItem())}
+                onClick={(e) => handleAddToCartClick(e)}
                 className="px-4 py-2 bg-[#f2eded] hover:bg-[#e8d5f5] text-[#4b0082] font-extrabold text-xs rounded-xl border border-[#4b0082]/30 transition"
               >
                 Add To Cart

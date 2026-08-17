@@ -91,27 +91,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const codFee = paymentMethod === 'COD' ? 50 : 0;
   const finalAmount = subtotal + codFee;
 
-  // Dynamically load Razorpay checkout script
-  const loadRazorpayScript = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      if ((window as any).Razorpay) {
-        resolve(true);
-        return;
-      }
-      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
-      if (existingScript) {
-        resolve(true);
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.async = true;
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
   const handleAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -249,74 +228,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePrepaidCheckout = (event?: any) => {
+    const storeElement = document.querySelector('shopify-store') as any;
+    if (storeElement) {
+      storeElement.buyNow(event);
+    }
+  };
+
+  const handlePlaceOrder = async (e?: React.MouseEvent) => {
     setErrorMessage(null);
 
-    // If Prepaid via Razorpay (UPI / Cards / Net Banking)
+    // For PREPAID orders — replace custom Razorpay flow with Shopify native checkout
     if (paymentMethod === 'Prepaid UPI/Razorpay') {
-      setIsProcessing(true);
-      const isScriptLoaded = await loadRazorpayScript();
-
-      if (!isScriptLoaded) {
-        setIsProcessing(false);
-        setErrorMessage('Failed to load secure Razorpay gateway. Please check your internet connection or choose COD.');
-        return;
-      }
-
-      const razorpayKey =
-        (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || 'rzp_test_TQMuUQaF5RTDps';
-
-      const options = {
-        key: razorpayKey,
-        amount: Math.round(finalAmount * 100), // Amount in paise (multiply by 100)
-        currency: 'INR',
-        name: 'Indigo & Co.',
-        description: 'Order from Indigo & Co.',
-        image: 'https://cdn.shopify.com/s/files/1/0836/9442/0193/files/ChatGPT_Image_Jun_25_2026_07_08_59_PM.png?v=1782394850',
-        theme: {
-          color: '#4b0082'
-        },
-        prefill: {
-          name: name.trim(),
-          email: email.trim(),
-          contact: phone.trim()
-        },
-        handler: async function (paymentResponse: any) {
-          console.log('[Razorpay] Payment Success Received!', paymentResponse);
-          setIsProcessing(true);
-          await submitOrderToBackend({
-            razorpayPaymentId: paymentResponse.razorpay_payment_id,
-            razorpayOrderId: paymentResponse.razorpay_order_id,
-            razorpaySignature: paymentResponse.razorpay_signature
-          });
-        },
-        modal: {
-          ondismiss: function () {
-            console.log('[Razorpay] Modal closed by user');
-            setIsProcessing(false);
-          }
-        }
-      };
-
-      try {
-        const razorpayInstance = new (window as any).Razorpay(options);
-        razorpayInstance.on('payment.failed', function (failureResp: any) {
-          console.error('[Razorpay] Payment failed event:', failureResp);
-          setIsProcessing(false);
-          setErrorMessage(
-            `Payment Failed: ${failureResp?.error?.description || failureResp?.error?.reason || 'Transaction was declined.'}`
-          );
-        });
-        razorpayInstance.open();
-      } catch (rzpErr: any) {
-        console.error('Razorpay Init Error:', rzpErr);
-        setIsProcessing(false);
-        setErrorMessage('Could not initialize Razorpay checkout. Please try again.');
-      }
+      handlePrepaidCheckout(e);
       return;
     }
 
-    // For COD Orders: Directly call /api/create-order without Razorpay
+    // For COD orders — keep existing flow completely unchanged. COD orders still go through our custom checkout form → Supabase → api/create-order.
     setIsProcessing(true);
     await submitOrderToBackend();
   };

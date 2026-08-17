@@ -49,3 +49,24 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #4b0082;
 }
+
+/* Shopify Web Components Cart Styling */
+shopify-cart::part(dialog) {
+  font-family: inherit;
+  border-radius: 1.5rem;
+  max-width: 420px;
+}
+
+shopify-cart::part(primary-button) {
+  background-color: #4b0082;
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 800;
+}
+
+shopify-cart::part(secondary-button) {
+  border-color: #4b0082;
+  color: #4b0082;
+  border-radius: 0.75rem;
+}
+

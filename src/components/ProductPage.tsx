@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Product, CartItem } from '../types';
+import { SHOPIFY_PRODUCT_HANDLES } from '../data/products';
 import { PaymentIconsRow } from './PaymentLogos';
 import { BenefitCard, CustomerProofRow, CoolTagsRow } from './CustomerSocialProof';
 import { ReviewsSection } from './ReviewsSection';
@@ -124,6 +125,16 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     selectedBundleId: selectedBundle?.id
   };
 
+  const shopifyHandle = product.shopifyHandle || SHOPIFY_PRODUCT_HANDLES[product.id] || product.id;
+
+  const handleAddToCartClick = (e?: any) => {
+    const storeElement = document.querySelector('shopify-store') as any;
+    if (storeElement) {
+      storeElement.addToCart(e);
+    }
+    onAddToCart(currentCartItem);
+  };
+
   const relatedProducts = allProducts.filter((p) => p.id !== product.id).slice(0, 4);
 
   return (
@@ -171,7 +182,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 <span className="bg-[#4b0082] text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                   {discountPct}% OFF
                 </span>
-                {product.isBestSeller && (
+                {product.isHero && (
                   <span className="bg-rose-500 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                     ❤️ Best Seller
                   </span>
@@ -316,9 +327,9 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                             : 'border-gray-200 bg-white hover:border-gray-300'
                         }`}
                       >
-                        {bundle.badge && (
+                        {bundle.isPopular && (
                           <span className="absolute -top-2.5 right-2 bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase shadow-2xs">
-                            {bundle.badge}
+                            POPULAR
                           </span>
                         )}
                         <div className="font-extrabold text-xs text-gray-900">{bundle.name}</div>
@@ -382,7 +393,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               </button>
 
               <button
-                onClick={() => onAddToCart(currentCartItem)}
+                onClick={(e) => handleAddToCartClick(e)}
                 className="w-full py-3.5 bg-white hover:bg-gray-50 text-[#4b0082] border-2 border-[#4b0082] text-sm font-extrabold rounded-2xl transition flex items-center justify-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4" />

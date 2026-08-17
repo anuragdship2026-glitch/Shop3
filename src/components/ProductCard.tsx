@@ -1,5 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
+import { SHOPIFY_PRODUCT_HANDLES } from '../data/products';
 import { ShoppingBag, Zap, Star } from 'lucide-react';
 
 interface ProductCardProps {
@@ -16,6 +17,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onBuyNow
 }) => {
   const discountPercent = Math.round(((product.mrp - product.sellPrice) / product.mrp) * 100);
+  const shopifyHandle = product.shopifyHandle || SHOPIFY_PRODUCT_HANDLES[product.id] || product.id;
+
+  const handleAddToCart = (event?: any) => {
+    // Try Shopify Web Components cart first
+    const storeElement = document.querySelector('shopify-store') as any;
+    if (storeElement) {
+      storeElement.addToCart(event);
+    }
+    // Also keep our local cart in sync
+    onAddToCart(product);
+  };
 
   return (
     <div
@@ -86,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onAddToCart(product);
+              handleAddToCart(e);
             }}
             className="w-full py-2 bg-[#f2eded] hover:bg-[#e8d5f5] text-[#4b0082] font-extrabold text-[10px] uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1 border border-[#4b0082]/20"
           >

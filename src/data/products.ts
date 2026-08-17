@@ -1,10 +1,24 @@
 import { Product, Review, SizeChartRow } from '../types';
 
+export const SHOPIFY_PRODUCT_HANDLES: Record<string, string> = {
+  'warmease-heating-massage-belt': 'period-cramp-relief-massager-with-heating-pad-for-back-pain-cramp-free-period-cramp-relief-heater-massager-works-as-periods-pain-relief-periods-cramps-back-belly-heating-pad-cuvffjsec3ustpoo5fo0',
+  'indigoflow-smocked-midi-dress': 'stylish-women-dress-d4bc0lfl9odtq4216p60',
+  'postureright-back-support-belt': 'posture-corrector-belt-unisex-d6aktvou4oec73bicsmg',
+  'instablack-touchup-stick': '2-in-1-instant-hair-color-stick-waterproof-and-sweat-proof-hair-dye-stick-pack-of-1-d8pd719fa6tc73d483rg',
+  'japcounter-digital-jaap-mala': 'japcounter-digital-jaap-mala-d28arfi1iaqvkvp1e3p0',
+  'glowsheet-korean-collagen-mask': 'korean-glass-skin-face-mask-with-real-deep-bio-collagen-50-gram-cuuqtecec3ustpoo5ej0',
+  'miniblend-portable-juice-blender': 'portable-mini-blender-for-fresh-juice-d2rebfb6vuggceq18fk0',
+  'high-waist-tummy-tucker-shapewear': '4-in-1-shaper-quick-slim-shapewear-tummy-tucker-d7sruq78clrs73dgfrhg',
+  'cool-gel-face-mask': 'cool-gel-full-face-mask-summer-ice-cooling-sleeping-mask-cucuukfmm8ib387l82eg',
+  'cool-gel-full-face-mask': 'cool-gel-full-face-mask-summer-ice-cooling-sleeping-mask-cucuukfmm8ib387l82eg',
+};
+
 export const HERO_PRODUCTS_COUNT = 4;
 
 export const PRODUCTS: Product[] = [
   {
     id: 'warmease-heating-massage-belt',
+    shopifyHandle: 'period-cramp-relief-massager-with-heating-pad-for-back-pain-cramp-free-period-cramp-relief-heater-massager-works-as-periods-pain-relief-periods-cramps-back-belly-heating-pad-cuvffjsec3ustpoo5fo0',
     name: 'WarmEase™ Portable Heating Massage Belt — Period Pain & Back Cramp Relief',
     supplier: 'Dropship India',
     cost: 500,
@@ -73,6 +87,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'indigoflow-smocked-midi-dress',
+    shopifyHandle: 'stylish-women-dress-d4bc0lfl9odtq4216p60',
     name: 'IndigoFlow™ Smocked Midi Dress — Effortless Everyday Style for Women',
     supplier: 'Dropship India',
     cost: 250,
@@ -139,6 +154,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'postureright-back-support-belt',
+    shopifyHandle: 'posture-corrector-belt-unisex-d6aktvou4oec73bicsmg',
     name: 'PostureRight™ Unisex Back Support Belt — Fix Your Posture, Relieve Back Pain',
     supplier: 'Dropship India',
     cost: 180,
@@ -205,6 +221,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'cool-gel-full-face-mask',
+    shopifyHandle: 'cool-gel-full-face-mask-summer-ice-cooling-sleeping-mask-cucuukfmm8ib387l82eg',
     name: 'Cool Gel Full Face Mask Summer Ice Cooling Sleeping Mask',
     supplier: 'Dropship India',
     cost: 390,
@@ -272,6 +289,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'glowsheet-korean-collagen-mask',
+    shopifyHandle: 'korean-glass-skin-face-mask-with-real-deep-bio-collagen-50-gram-cuuqtecec3ustpoo5ej0',
     name: 'GlowSheet™ Korean Overnight Bio-Collagen Face Mask — Glass Skin',
     supplier: 'Dropship India',
     cost: 150,
@@ -333,6 +351,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'japcounter-digital-jaap-mala',
+    shopifyHandle: 'japcounter-digital-jaap-mala-d28arfi1iaqvkvp1e3p0',
     name: 'JapCounter™ — Digital Jaap Mala with Built-In Counter',
     supplier: 'Dropship India',
     cost: 250,
@@ -399,6 +418,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'miniblend-portable-juice-blender',
+    shopifyHandle: 'portable-mini-blender-for-fresh-juice-d2rebfb6vuggceq18fk0',
     name: 'MiniBlend™ Portable Juice Blender Bottle — Fresh Juice & Shakes Anywhere',
     supplier: 'Dropship India',
     cost: 295,
@@ -465,6 +485,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'high-waist-tummy-tucker-shapewear',
+    shopifyHandle: '4-in-1-shaper-quick-slim-shapewear-tummy-tucker-d7sruq78clrs73dgfrhg',
     name: 'High Waist Tummy Tucker Shapewear — Seamless Body Shaper for Women',
     supplier: 'Dropship India',
     cost: 175,
@@ -533,6 +554,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'instablack-touchup-stick',
+    shopifyHandle: '2-in-1-instant-hair-color-stick-waterproof-and-sweat-proof-hair-dye-stick-pack-of-1-d8pd719fa6tc73d483rg',
     name: 'InstaBlack 2-in-1 Root Touch-Up Stick — Waterproof Instant Hair Color',
     supplier: 'Dropship India',
     cost: 200,
